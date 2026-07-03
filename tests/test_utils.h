@@ -8,26 +8,26 @@ extern "C" {
 #endif
 
 /**
- * @brief ½«×Ö·û´®Ğ´ÈëÎÄ¼ş
- * @param filename  ÎÄ¼şÂ·¾¶
- * @param content   ÒªĞ´ÈëµÄ×Ö·û´®
- * @param append    0=¸²¸ÇĞ´Èë, 1=×·¼ÓĞ´Èë
- * @return          0 ³É¹¦, -1 Ê§°Ü
+ * @brief å°†å­—ç¬¦ä¸²å†™å…¥æ–‡ä»¶
+ * @param filename  æ–‡ä»¶è·¯å¾„
+ * @param content   è¦å†™å…¥çš„å­—ç¬¦ä¸²
+ * @param append    0=è¦†ç›–å†™å…¥, 1=è¿½åŠ å†™å…¥
+ * @return          0 æˆåŠŸ, -1 å¤±è´¥
  */
 int string_to_file(const char* filename, const char* content, int append);
 
 /**
- * @brief É¾³ıÎÄ¼ş
- * @param filename  ÎÄ¼şÂ·¾¶
- * @return          0 ³É¹¦, -1 Ê§°Ü
+ * @brief åˆ é™¤æ–‡ä»¶
+ * @param filename  æ–‡ä»¶è·¯å¾„
+ * @return          0 æˆåŠŸ, -1 å¤±è´¥
  */
 int delete_file(const char* filename);
 
 
 /**
- * @brief Ö´ĞĞ×Ö·û´®ÖĞµÄÓï¾ä
- * @param lispstr lisp Óï·¨µÄ×Ö·û´®
- * @return Óï¾ä½á¹û
+ * @brief æ‰§è¡Œå­—ç¬¦ä¸²ä¸­çš„è¯­å¥
+ * @param lispstr lisp è¯­æ³•çš„å­—ç¬¦ä¸²
+ * @return è¯­å¥ç»“æœ
  */
 value_t cl_eval_string(const char* lispstr);
 

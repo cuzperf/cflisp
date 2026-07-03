@@ -49,7 +49,7 @@ typedef uintptr_t type_t;
 #define head_(l) (list_val(l)->head)
 #define tail_(l) (list_val(l)->tail)
 #define lassert(cond, ...) do { if (!(cond)) error(__VA_ARGS__); } while(0)
-// NOTE: # ºÍ ## ²Ù×÷·û»á×èÖ¹Æä²Ù×÷ÊıµÄ½øÒ»²½ºêÕ¹¿ª£¬Ç¶Ì×Ò»²ãÊÇÎªÁËÈÃ²ÎÊıÔÚ"¼ûµ½" # Ö®Ç°ÏÈÍê³É×ÔÉíµÄºêÕ¹¿ª [³ÂÖÇÅô@2026-6-27]¡£
+// NOTE: # å’Œ ## æ“ä½œç¬¦ä¼šé˜»æ­¢å…¶æ“ä½œæ•°çš„è¿›ä¸€æ­¥å®å±•å¼€ï¼ŒåµŒå¥—ä¸€å±‚æ˜¯ä¸ºäº†è®©å‚æ•°åœ¨"è§åˆ°" # ä¹‹å‰å…ˆå®Œæˆè‡ªèº«çš„å®å±•å¼€ [é™ˆæ™ºé¹@2026-6-27]ã€‚
 #define str(x) _str(x)
 #define _str(x) #x
 #define lassert_type(val, type) \

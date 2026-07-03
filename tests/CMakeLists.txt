@@ -8,6 +8,10 @@ include_directories("${CMAKE_SOURCE_DIR}/src")
 include_directories("${CMAKE_SOURCE_DIR}/tests")
 
 # test_utils
+if (MSVC)
+  # 忽略 sprintf 不安全警告
+  set_source_files_properties(utils/test_lisp_eval.c PROPERTIES COMPILE_FLAGS /wd4996)
+endif()
 add_library(test_utils
   utils/string_to_file.c
   utils/test_lisp_eval.c

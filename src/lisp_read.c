@@ -1,30 +1,30 @@
 #include "lisp.h"
 
 /**
- * ±¾ÎÄ¼ş¶ÔÍâÌá¹©Á½¸ö½Ó¿Úº¯Êı fl_read_file ºÍ read
+ * æœ¬æ–‡ä»¶å¯¹å¤–æä¾›ä¸¤ä¸ªæ¥å£å‡½æ•° fl_read_file å’Œ read
  */
 
-// TODO: ²¹³äº¯Êı read_string ¶ÁÈ¡ÍêÕûµÄ lisp Óï¾ä£¬È»ºó½øĞĞÖ´ĞĞ£¬
-//       ¼´¿É»ñµÃ¶¯Ì¬½âÎö×Ö·û´®µÄÄÜÁ¦ [³ÂÖÇÅô@2026-6-25]
+// TODO: è¡¥å……å‡½æ•° read_string è¯»å–å®Œæ•´çš„ lisp è¯­å¥ï¼Œç„¶åè¿›è¡Œæ‰§è¡Œï¼Œ
+//       å³å¯è·å¾—åŠ¨æ€è§£æå­—ç¬¦ä¸²çš„èƒ½åŠ› [é™ˆæ™ºé¹@2026-6-25]
 // void read_string(const char* lispString,  Symbol** env);
 
-// TODO: ²¹³äº¯Êı read_double £¨´ËÊ±ĞèÒª²¹³äÊôĞÔÎ»ÁË£©[³ÂÖÇÅô@2026-6-25]
+// TODO: è¡¥å……å‡½æ•° read_double ï¼ˆæ­¤æ—¶éœ€è¦è¡¥å……å±æ€§ä½äº†ï¼‰[é™ˆæ™ºé¹@2026-6-25]
 
 static inline bool is_space(char c)
 {
     return c == ' ' || c == '\t' || c == '\n';
 }
 
-// ´ÓÎÄ¼şÖĞÈ¡Ò»¸ö char, È»ºó»ØÍËÖ¸Õë£¬¾ÍºÃÏñÃ»È¡Ò»Ñù
+// ä»æ–‡ä»¶ä¸­å–ä¸€ä¸ª char, ç„¶åå›é€€æŒ‡é’ˆï¼Œå°±å¥½åƒæ²¡å–ä¸€æ ·
 static inline char fpeekc(FILE* f)
 {
     char c = (char)getc(f);
     /* printf("%c\n", c); */
-    ungetc(c, f);   // °ÑÉÏ´ÎÈ¡³öÀ´µÄÔÙÍË»ØÈ¥£¨Ö®Ç°¶¼Ã»ÓÃ¹ı£¡£©
+    ungetc(c, f);   // æŠŠä¸Šæ¬¡å–å‡ºæ¥çš„å†é€€å›å»ï¼ˆä¹‹å‰éƒ½æ²¡ç”¨è¿‡ï¼ï¼‰
     return c;
 }
 
-// ºöÂÔ¿Õ°××Ö·û£¬¶Áµ½×îºóÒ»¸ö·Ç¿Õ°××Ö·ûºó£¬ÔÙ»ØÍË»ØÈ¥
+// å¿½ç•¥ç©ºç™½å­—ç¬¦ï¼Œè¯»åˆ°æœ€åä¸€ä¸ªéç©ºç™½å­—ç¬¦åï¼Œå†å›é€€å›å»
 static void skip_spaces(FILE* f)
 {
     char c = (char)fgetc(f);
@@ -45,8 +45,8 @@ static void skip_comments(FILE* f)
 
 #define MAX_NAME (256)
 /**
- * @note Ïò·ûºÅ»·¾³ÖĞ²¹³äÒ»¸ö·ûºÅ£¨Èç¹û·ûºÅ»·¾³ÖĞÃ»ÓĞ£©
- * @note Ïò g_stack ÖĞ¼ÓÈëÒ»¸öÔªËØ
+ * @note å‘ç¬¦å·ç¯å¢ƒä¸­è¡¥å……ä¸€ä¸ªç¬¦å·ï¼ˆå¦‚æœç¬¦å·ç¯å¢ƒä¸­æ²¡æœ‰ï¼‰
+ * @note å‘ g_stack ä¸­åŠ å…¥ä¸€ä¸ªå…ƒç´ 
  */
 static void read_sym(FILE* f, Symbol** env)
 {
@@ -67,7 +67,7 @@ static void read_sym(FILE* f, Symbol** env)
 }
 
 /**
- * @note Ïò g_stack ÖĞ¼ÓÈëÒ»¸öÔªËØ
+ * @note å‘ g_stack ä¸­åŠ å…¥ä¸€ä¸ªå…ƒç´ 
  */
 static void read_int(FILE* f, Symbol** env)
 {
@@ -83,7 +83,7 @@ static void read_int(FILE* f, Symbol** env)
 }
 
 /**
- * @note Ïò g_stack ÖĞ¼ÓÈëÒ»¸öÔªËØ£¨¼´Ê¹ EMPTY_LIST Ò²Èç´Ë£©
+ * @note å‘ g_stack ä¸­åŠ å…¥ä¸€ä¸ªå…ƒç´ ï¼ˆå³ä½¿ EMPTY_LIST ä¹Ÿå¦‚æ­¤ï¼‰
  */
 static void read_list(FILE* f, Symbol** env)
 {
@@ -119,9 +119,9 @@ static void read_list(FILE* f, Symbol** env)
 }
 
 /**
-* @brief ¶ÁÈ¡ÎÄ¼ş£¬Ïò g_stack ÖĞ¼ÓÈëÒ»¸öÔªËØ£¨¶ÁÈ¡µÄÄÚÈİ£©
-* @note ÖĞ¼ä²úÉúµÄ·ûºÅ¼ÇÂ¼ÔÚ·ûºÅ»·¾³ÖĞ
-* @note ¼ì²éËùÓĞµÄ·ÖÖ§£¬¿É¹éÄÉfl_readread Ïò g_stack ÖĞ¼ÓÈëÒ»¸öÔªËØ
+* @brief è¯»å–æ–‡ä»¶ï¼Œå‘ g_stack ä¸­åŠ å…¥ä¸€ä¸ªå…ƒç´ ï¼ˆè¯»å–çš„å†…å®¹ï¼‰
+* @note ä¸­é—´äº§ç”Ÿçš„ç¬¦å·è®°å½•åœ¨ç¬¦å·ç¯å¢ƒä¸­
+* @note æ£€æŸ¥æ‰€æœ‰çš„åˆ†æ”¯ï¼Œå¯å½’çº³fl_readread å‘ g_stack ä¸­åŠ å…¥ä¸€ä¸ªå…ƒç´ 
 */
 void fl_read(FILE* f, Symbol** env)
 {
@@ -181,8 +181,8 @@ start:
 }
 
 /**
- * @brief ´ò¿ª name ÎÄ¼ş£¬µ÷fl_readad º¯Êı£¬´¦Àí g_stack ÖĞÄÚÈİ±ä³ÉÒ»¸ö List ×÷Îª·µ»ØÖµ
- * @note ×îÖÕ g_stack ºÍ g_sp ÎŞÈÎºÎ±ä»¯
+ * @brief æ‰“å¼€ name æ–‡ä»¶ï¼Œè°ƒfl_readad å‡½æ•°ï¼Œå¤„ç† g_stack ä¸­å†…å®¹å˜æˆä¸€ä¸ª List ä½œä¸ºè¿”å›å€¼
+ * @note æœ€ç»ˆ g_stack å’Œ g_sp æ— ä»»ä½•å˜åŒ–
  */
 value_t read_file(const char* name)
 {
@@ -203,7 +203,7 @@ value_t read_file(const char* name)
     }
     fclose(f);
 
-    // NOTE: ´Ó ss µ½ g_sp µÄÔªËØ¶¼ÊÇ¶ÑÉÏµÄÔªËØ£¬¹Ê¶øÏÂÃæ²Ù×÷ÊÇ°²È«µÄ [³ÂÖÇÅô@2026-6-26]
+    // NOTE: ä» ss åˆ° g_sp çš„å…ƒç´ éƒ½æ˜¯å †ä¸Šçš„å…ƒç´ ï¼Œæ•…è€Œä¸‹é¢æ“ä½œæ˜¯å®‰å…¨çš„ [é™ˆæ™ºé¹@2026-6-26]
     int ss1 = ss + 1;
     value_t cur = g_stack[ss];
     while (ss1 < g_sp) {

@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-// NOTE: 属于曲线完成 lisp 对字符串的处理了 [陈智鹏@2026-7-3]
+// NOTE: 灞炰簬鏇茬嚎瀹屾垚 lisp 瀵瑰瓧绗︿覆鐨勫鐞嗕簡 [闄堟櫤楣廆2026-7-3]
 value_t cl_eval_string(const char* lispstr)
 {
     srand((unsigned)time(NULL));
     char filename[32];
-    int r1 = rand() % 100000;   // Mac 平台 rand 值域更大
-    int r2 = rand() % 100000;   // 限制最大长度为 5
+    int r1 = rand() % 100000;   // Mac 骞冲彴 rand 鍊煎煙鏇村ぇ
+    int r2 = rand() % 100000;   // 闄愬埗鏈�澶ч暱搴︿负 5
     sprintf(filename, "build/test_%d_%d.lsp", r1, r2);
 
     string_to_file(filename, lispstr, 0);

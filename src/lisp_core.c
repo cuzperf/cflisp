@@ -69,7 +69,7 @@ type_t type_of(value_t v)
 }
 
 
-// Õ»
+// æ ˆ
 value_t* g_stack;
 int g_sp = 0;
 
@@ -103,7 +103,7 @@ void restore_stack(int n)
     g_sp = n;
 }
 
-// »·¾³Õ»
+// çŽ¯å¢ƒæ ˆ
 value_t* g_env_stack;
 int g_env_sp = 0;
 
@@ -131,7 +131,7 @@ void env_restore_stack(int n)
     g_env_sp = n;
 }
 
-// ¶ÑºÍ gc
+// å †å’Œ gc
 static void* halloc(size_t);
 value_t make_cell(value_t v)
 {

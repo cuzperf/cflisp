@@ -1,8 +1,8 @@
 #include "lisp.h"
 
 /**
- * @brief ½« list ÔªËØ·´ÏòÑ¹Õ»
- * @note Ã»ÓÐ½«Æä·ÅÔÚ lisp_list.c ÖÐ£¬ÊÇÒòÎª½öÔÚ´ËÎÄ¼þÖÐ±»Ê¹ÓÃ£¬ËùÒÔÃ»±ØÒª±©Â¶
+ * @brief å°† list å…ƒç´ åå‘åŽ‹æ ˆ
+ * @note æ²¡æœ‰å°†å…¶æ”¾åœ¨ lisp_list.c ä¸­ï¼Œæ˜¯å› ä¸ºä»…åœ¨æ­¤æ–‡ä»¶ä¸­è¢«ä½¿ç”¨ï¼Œæ‰€ä»¥æ²¡å¿…è¦æš´éœ²
  */
 static void push_reverse_list(value_t l)
 {
@@ -19,7 +19,7 @@ static inline value_t to_bool(value_t v)
 }
 
 /**
- * @brief ¶¥²ãÇóÖµ£¬ÏÈ·´ÐòÑ¹Õ»£¬ÔÙ´Ó×îµ×²ãÍøÉÏÇóÖµ
+ * @brief é¡¶å±‚æ±‚å€¼ï¼Œå…ˆååºåŽ‹æ ˆï¼Œå†ä»Žæœ€åº•å±‚ç½‘ä¸Šæ±‚å€¼
  */
 value_t eval_toplevel(value_t l)
 {
@@ -64,7 +64,7 @@ static void prepare_env(value_t args, int ss);
 static value_t eval_sym(value_t v);
 
 /**
- * @brief ±¾ÎÄ¼þÖÐ×îºËÐÄµÄº¯Êý
+ * @brief æœ¬æ–‡ä»¶ä¸­æœ€æ ¸å¿ƒçš„å‡½æ•°
  */
 static value_t eval_sexp(value_t sexp, bool noeval)
 {
@@ -101,8 +101,8 @@ apply_top:
         }
 
         if (type_of(fun) == TYPE_LIST) {
-            args = (head(tail(fun)));   // ÐÎ²Î
-            body = tail(tail(fun));     // º¯ÊýÌå
+            args = (head(tail(fun)));   // å½¢å‚
+            body = tail(tail(fun));     // å‡½æ•°ä½“
             goto apply;
         }
         //print(fun);
@@ -351,10 +351,10 @@ apply:
     {
         funtype = head(fun);
         lassert(funtype == FN || funtype == MACRO, "Applying not a function!!!!!");
-        value_t list = pop();   // Èë²Î
+        value_t list = pop();   // å…¥å‚
         //println(list);
-        //println(args);          // ÐÎ²Î
-        //println(body);          // º¯ÊýÌå
+        //println(args);          // å½¢å‚
+        //println(body);          // å‡½æ•°ä½“
         push(body);
         push(args);
 
@@ -375,8 +375,8 @@ apply:
         args = pop();
         body = pop();
 
-        //println(args);          // ÐÎ²Î
-        //println(body);          // º¯ÊýÌå
+        //println(args);          // å½¢å‚
+        //println(body);          // å‡½æ•°ä½“
 
         push_reverse_list(body);
 
@@ -405,7 +405,7 @@ end:
 }
 
 /**
- * @brief ÅÐ¶ÏÁ½¸öÖµÊÇ·ñÒ»ÖÂ£¨¶ø·ÇÄÚ´æÒ»ÖÂ£©
+ * @brief åˆ¤æ–­ä¸¤ä¸ªå€¼æ˜¯å¦ä¸€è‡´ï¼ˆè€Œéžå†…å­˜ä¸€è‡´ï¼‰
  */
 static value_t eqp(value_t v1, value_t v2)
 {
@@ -425,9 +425,9 @@ static value_t eqp(value_t v1, value_t v2)
 
 /**
  *
- * @brief ±Õ°ü´´½¨Ê±µÄ±äÁ¿²¶»ñº¯Êý
- * µ±½âÊÍÆ÷Ö´ÐÐ fn »ò macro Ê±µ÷ÓÃ£¬ËüÉî¿½±´º¯ÊýÌå
- * Í¬Ê±½«µ±Ç°»·¾³ÖÐ°ó¶¨µÄ×ÔÓÉ±äÁ¿Ìæ»»ÎªÊµ¼ÊÖµ ¡ªÊµÏÖÉî¿½±´²¶»ñÓïÒå
+ * @brief é—­åŒ…åˆ›å»ºæ—¶çš„å˜é‡æ•èŽ·å‡½æ•°
+ * å½“è§£é‡Šå™¨æ‰§è¡Œ fn æˆ– macro æ—¶è°ƒç”¨ï¼Œå®ƒæ·±æ‹·è´å‡½æ•°ä½“
+ * åŒæ—¶å°†å½“å‰çŽ¯å¢ƒä¸­ç»‘å®šçš„è‡ªç”±å˜é‡æ›¿æ¢ä¸ºå®žé™…å€¼ â€”å®žçŽ°æ·±æ‹·è´æ•èŽ·è¯­ä¹‰
  */
 static value_t copy_body(value_t body)
 {
@@ -495,7 +495,7 @@ static void prepare_env(value_t args, int ss)
         }
     }
 
-    // NOTE: ×¢ÒâÔÚÇ°ÃæµÄÅÐ¶ÏÖÐ, args ¿ÉÄÜ±»¸Ä±ä [³ÂÖÇÅô@2026-6-29]
+    // NOTE: æ³¨æ„åœ¨å‰é¢çš„åˆ¤æ–­ä¸­, args å¯èƒ½è¢«æ”¹å˜ [é™ˆæ™ºé¹@2026-6-29]
     if (!is_list(args)) {
         env_push(pop_list(ss));
         env_push(args);
@@ -505,9 +505,9 @@ static void prepare_env(value_t args, int ss)
 }
 
 /**
- * @note »·¾³Õ» g_env_stack µÄ²¼¾ÖÊÇ [Öµ, ·ûºÅÃû, Öµ, ·ûºÅÃû, ...]£¬Ã¿¶ÔÊÇ [value, symbol]¡£Óöµ½·ûºÅÊ±µ¹Ðò²éÕÒ£º
- * ÕÒµ½ ¡ú ·µ»Ø·ûºÅµ±Ç°°ó¶¨µÄÖµ£¨Ìæ»»ÎªÊµ¼ÊÖµ£¬Íê³É²¶»ñ£©
- * Ã»ÕÒµ½ ¡ú ·µ»Ø·ûºÅ±¾Éí£¨×ÔÓÉ±äÁ¿£¬ÔËÐÐÊ±ÔÚÈ«¾Ö»·¾³²éÕÒ£©
+ * @note çŽ¯å¢ƒæ ˆ g_env_stack çš„å¸ƒå±€æ˜¯ [å€¼, ç¬¦å·å, å€¼, ç¬¦å·å, ...]ï¼Œæ¯å¯¹æ˜¯ [value, symbol]ã€‚é‡åˆ°ç¬¦å·æ—¶å€’åºæŸ¥æ‰¾ï¼š
+ * æ‰¾åˆ° â†’ è¿”å›žç¬¦å·å½“å‰ç»‘å®šçš„å€¼ï¼ˆæ›¿æ¢ä¸ºå®žé™…å€¼ï¼Œå®Œæˆæ•èŽ·ï¼‰
+ * æ²¡æ‰¾åˆ° â†’ è¿”å›žç¬¦å·æœ¬èº«ï¼ˆè‡ªç”±å˜é‡ï¼Œè¿è¡Œæ—¶åœ¨å…¨å±€çŽ¯å¢ƒæŸ¥æ‰¾ï¼‰
  */
 static value_t eval_sym(value_t v)
 {
@@ -530,7 +530,7 @@ static value_t eval_sym(value_t v)
     return sym_val(v)->binding;
 }
 
-// Î´±»Ê¹ÓÃ
+// æœªè¢«ä½¿ç”¨
 #if 0
 static void prepare_args(value_t args)
 {

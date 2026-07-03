@@ -7,7 +7,7 @@ class LispTest : public ::testing::Test {
  protected:
   void SetUp() override {
     lisp_init();
-    // NOTE: ¹¤×÷Â·¾¶±ØĞëÊÇ system.lsp ËùÔÚÂ·¾¶ [³ÂÖÇÅô@2026-6-27]
+    // NOTE: å·¥ä½œè·¯å¾„å¿…é¡»æ˜¯ system.lsp æ‰€åœ¨è·¯å¾„ [é™ˆæ™ºé¹@2026-6-27]
     value_t sexp = read_file("system.lsp");
     value_t res = eval_toplevel(sexp);
     EXPECT_EQ(res, NIL);

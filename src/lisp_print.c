@@ -90,18 +90,18 @@ void println(value_t v)
 }
 
 /*
- * pprint ©¤ ½á¹¹»¯´òÓ¡£¨pretty-print£©
+ * pprint â”€ ç»“æ„åŒ–æ‰“å°ï¼ˆpretty-printï¼‰
  *
- * Óë print ²»Í¬£¬pprint ¶ÔÇ¶Ì×ÁĞ±í½øĞĞËõ½øÅÅ°æ£¬Ê¹Ö®¸üÒ×¶Á¡£
- * ´òÓ¡¹æÔò£º
- *   - Ô­×Ó£¨Êı×Ö/·ûºÅ/builtin£©Ö±½Ó´òÓ¡
- *   - ¿ÕÁĞ±í´òÓ¡ ()
- *   - º¬ quote/quasiquote/unquote µÄÁĞ±íÊ¹ÓÃ¼òĞ´ (', `, ,)
- *   - ÔªËØÈ«²¿ÎªÔ­×ÓµÄÁĞ±í´òÓ¡ÔÚÒ»ĞĞ
- *   - °üº¬×ÓÁĞ±íµÄÁĞ±í»»ĞĞËõ½ø£¨Ã¿²ã 2 ¿Õ¸ñ£©
+ * ä¸ print ä¸åŒï¼Œpprint å¯¹åµŒå¥—åˆ—è¡¨è¿›è¡Œç¼©è¿›æ’ç‰ˆï¼Œä½¿ä¹‹æ›´æ˜“è¯»ã€‚
+ * æ‰“å°è§„åˆ™ï¼š
+ *   - åŸå­ï¼ˆæ•°å­—/ç¬¦å·/builtinï¼‰ç›´æ¥æ‰“å°
+ *   - ç©ºåˆ—è¡¨æ‰“å° ()
+ *   - å« quote/quasiquote/unquote çš„åˆ—è¡¨ä½¿ç”¨ç®€å†™ (', `, ,)
+ *   - å…ƒç´ å…¨éƒ¨ä¸ºåŸå­çš„åˆ—è¡¨æ‰“å°åœ¨ä¸€è¡Œ
+ *   - åŒ…å«å­åˆ—è¡¨çš„åˆ—è¡¨æ¢è¡Œç¼©è¿›ï¼ˆæ¯å±‚ 2 ç©ºæ ¼ï¼‰
  */
 
-/* ÅĞ¶ÏÁĞ±íÊÇ·ñ°üº¬Ç¶Ì×µÄ×ÓÁĞ±í */
+/* åˆ¤æ–­åˆ—è¡¨æ˜¯å¦åŒ…å«åµŒå¥—çš„å­åˆ—è¡¨ */
 static int has_sublist(value_t v)
 {
     while (v != EMPTY_LIST) {
@@ -128,7 +128,7 @@ static void pprint_(value_t v, int depth)
             printf("<relocated>");
             return;
         }
-        /* ¼òĞ´ĞÎÊ½ */
+        /* ç®€å†™å½¢å¼ */
         if (head(v) == QUOTE && tail(v) != EMPTY_LIST) {
             printf("'");
             pprint_(head(tail(v)), depth);
@@ -149,7 +149,7 @@ static void pprint_(value_t v, int depth)
             pprint_(head(tail(v)), depth);
             return;
         }
-        /* ¾ö¶¨µ¥ĞĞ»¹ÊÇ¶àĞĞ */
+        /* å†³å®šå•è¡Œè¿˜æ˜¯å¤šè¡Œ */
         if (has_sublist(v)) {
             printf("(");
             pprint_(head(v), depth + 1);
@@ -164,7 +164,7 @@ static void pprint_(value_t v, int depth)
             }
             printf(")");
         } else {
-            /* µ¥ĞĞ´òÓ¡ */
+            /* å•è¡Œæ‰“å° */
             printf("(");
             while (1) {
                 pprint_(head(v), depth);

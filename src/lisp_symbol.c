@@ -1,7 +1,7 @@
 #include "lisp.h"
 
 /**
- * @brief ×Ö·û´® hash, Ëæ±ãÂÒĞ´µÄ£¬ÄÜ´ïµ½ÏàÍ¬×Ö·û hash ÖµÏàÍ¬¼´¿É
+ * @brief å­—ç¬¦ä¸² hash, éšä¾¿ä¹±å†™çš„ï¼Œèƒ½è¾¾åˆ°ç›¸åŒå­—ç¬¦ hash å€¼ç›¸åŒå³å¯
  */
 static hash_t string_hash(const char* str)
 {
@@ -13,8 +13,8 @@ static hash_t string_hash(const char* str)
 }
 
 /**
- * @brief ´´½¨Ò»¸ö¼òµ¥µÄ·ûºÅ£¬²¢¼ÆËãÆä Hash Öµ
- * @note symbol ÓÃµÄÊÇ C µÄ¶Ñ£¬¹Ê¶øÎŞĞè±» gc ¿ØÖÆ£¡
+ * @brief åˆ›å»ºä¸€ä¸ªç®€å•çš„ç¬¦å·ï¼Œå¹¶è®¡ç®—å…¶ Hash å€¼
+ * @note symbol ç”¨çš„æ˜¯ C çš„å †ï¼Œæ•…è€Œæ— éœ€è¢« gc æ§åˆ¶ï¼
  */
 static Symbol* make_symbol(const char* name)
 {

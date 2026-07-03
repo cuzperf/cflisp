@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
 
+
 project(
   cflisp
   VERSION 0.0
   DESCRIPTION "Learn lisp for fun"
   LANGUAGES C CXX
 )
+
+if (MSVC)
+  add_compile_options(/W4)      # 警告等级4
+  add_compile_options(/wd4819)  # 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+else()
+  add_compile_options(-Wall -Wextra)
+endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -46,15 +54,12 @@ if (MSVC)
   # 部分 VS 版本 add_compile_options 不生效
   target_compile_options(cflisplib PRIVATE
     /WX         # 警告视为错误
-    /W4         # 警告等级4
     /wd4996     # 忽略 C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead.
     /wd4200     # 忽略 C4200: 使用了非标准扩展: 结构/联合中的零大小数组.
   )
 else()
   target_compile_options(cflisplib PRIVATE
     -Werror     # 警告视为错误
-    -Wall       # 常规警告
-    -Wextra     # 额外警告
   )
 endif()
 

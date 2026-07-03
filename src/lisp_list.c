@@ -1,21 +1,21 @@
 #include "lisp.h"
 
 /**
- * ±¾ÎÄ¼ş¶ÔÍâÌá¹©Îå¸ö½Ó¿Úº¯Êı cons_, cons, push_list, pop_list, make_list
+ * æœ¬æ–‡ä»¶å¯¹å¤–æä¾›äº”ä¸ªæ¥å£å‡½æ•° cons_, cons, push_list, pop_list, make_list
  */
 
- // NOTE: ÕâÀïµÄ List ³ıÁË EMPTY_LIST Íâ¶¼ÊÇ¶ÑÉÏµÄÔªËØ [³ÂÖÇÅô@2026-6-26]
+ // NOTE: è¿™é‡Œçš„ List é™¤äº† EMPTY_LIST å¤–éƒ½æ˜¯å †ä¸Šçš„å…ƒç´  [é™ˆæ™ºé¹@2026-6-26]
  /*  (a (b c) d)
  *
- *  [a|¡ñ]--¡ú[¡ñ|¡ñ]©¤©¤¡ú[d|EMPTY_LIST]
+ *  [a|â—]--â†’[â—|â—]â”€â”€â†’[d|EMPTY_LIST]
  *             |
  *             |
- *            [b|¡ñ]©¤©¤¡ú[c|EMPTY_LIST]
+ *            [b|â—]â”€â”€â†’[c|EMPTY_LIST]
  */
 
 /**
- * @brief ´´½¨ (h . t) µÄ List µ¥Ôª£¨²»ÒªÇó t Îª List £©
- * @note ×¢Òâ make_cell ¿ÉÄÜ»á´¥·¢ gc ´Ó¶øµ¼ÖÂ h ºÍ t Ö¸ÏòµÄÄÚÈİÊ§Ğ§
+ * @brief åˆ›å»º (h . t) çš„ List å•å…ƒï¼ˆä¸è¦æ±‚ t ä¸º List ï¼‰
+ * @note æ³¨æ„ make_cell å¯èƒ½ä¼šè§¦å‘ gc ä»è€Œå¯¼è‡´ h å’Œ t æŒ‡å‘çš„å†…å®¹å¤±æ•ˆ
  */
 value_t cons_(value_t h, value_t t)
 {
@@ -28,7 +28,7 @@ value_t cons_(value_t h, value_t t)
 }
 
 /**
- * @brief ´´½¨ (h . t) µÄ List µ¥Ôª£¨ÒªÇó t Îª List £©
+ * @brief åˆ›å»º (h . t) çš„ List å•å…ƒï¼ˆè¦æ±‚ t ä¸º List ï¼‰
  */
 value_t cons(value_t h, value_t t)
 {
@@ -37,7 +37,7 @@ value_t cons(value_t h, value_t t)
 }
 
 /**
- * @brief ½« List ÖğÔªËØÑ¹Õ»
+ * @brief å°† List é€å…ƒç´ å‹æ ˆ
  */
 void push_list(value_t l)
 {
@@ -48,8 +48,8 @@ void push_list(value_t l)
 }
 
 /**
- * @brief Öğ¸ö³öÕ»Ö±µ½ g_sp µÈÓÚ ss
- * @return ÒÔ g_stack[ss] Îª¶¥ÔªËØµÄ List
+ * @brief é€ä¸ªå‡ºæ ˆç›´åˆ° g_sp ç­‰äº ss
+ * @return ä»¥ g_stack[ss] ä¸ºé¡¶å…ƒç´ çš„ List
  */
 value_t pop_list(int ss)
 {
@@ -63,7 +63,7 @@ value_t pop_list(int ss)
 }
 
 /**
- * @brief ½«¿É±ä²ÎÊı¸öÔªËØ£¬¹¹½¨³ÉÒ»¸öÒÔ h Îª¶¥ÔªËØµÄ List
+ * @brief å°†å¯å˜å‚æ•°ä¸ªå…ƒç´ ï¼Œæ„å»ºæˆä¸€ä¸ªä»¥ h ä¸ºé¡¶å…ƒç´ çš„ List
  */
 value_t make_list(value_t h, ...)
 {

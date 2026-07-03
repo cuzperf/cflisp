@@ -1,11 +1,11 @@
 #include "test_utils.h"
 
 /**
- * ½«×Ö·û´®Ğ´ÈëÎÄ¼ş
- * @param filename  ÎÄ¼şÂ·¾¶
- * @param content   ÒªĞ´ÈëµÄ×Ö·û´®
- * @param append    0=¸²¸ÇĞ´Èë, 1=×·¼ÓĞ´Èë
- * @return          0 ³É¹¦, -1 Ê§°Ü
+ * å°†å­—ç¬¦ä¸²å†™å…¥æ–‡ä»¶
+ * @param filename  æ–‡ä»¶è·¯å¾„
+ * @param content   è¦å†™å…¥çš„å­—ç¬¦ä¸²
+ * @param append    0=è¦†ç›–å†™å…¥, 1=è¿½åŠ å†™å…¥
+ * @return          0 æˆåŠŸ, -1 å¤±è´¥
  */
 int string_to_file(const char* filename, const char* content, int append) {
     if (filename == NULL || content == NULL) {
@@ -19,11 +19,11 @@ int string_to_file(const char* filename, const char* content, int append) {
         return -1;
     }
 
-    // Ğ´ÈëÄÚÈİ
+    // å†™å…¥å†…å®¹
     size_t len = strlen(content);
     size_t written = fwrite(content, 1, len, fp);
 
-    // ¿ÉÑ¡£º×·¼Ó»»ĞĞ
+    // å¯é€‰ï¼šè¿½åŠ æ¢è¡Œ
     // fputc('\n', fp);
 
     if (fclose(fp) != 0) {

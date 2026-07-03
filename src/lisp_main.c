@@ -3,12 +3,12 @@
 int main(int argc, char* argv[])
 {
     lisp_init();
-    // NOTE: ¹¤×÷Â·¾¶±ØĞëÊÇ system.lsp ËùÔÚÂ·¾¶ [³ÂÖÇÅô@2026-6-27]
+    // NOTE: å·¥ä½œè·¯å¾„å¿…é¡»æ˜¯ system.lsp æ‰€åœ¨è·¯å¾„ [é™ˆæ™ºé¹@2026-6-27]
     value_t sexp = read_file("system.lsp");
     eval_toplevel(sexp);
 
     if (argc > 1) {
-        // ´¿ÎÄ¼şÃû»òÈ«Â·¾¶ÎÄ¼şÃû
+        // çº¯æ–‡ä»¶åæˆ–å…¨è·¯å¾„æ–‡ä»¶å
         value_t user_sexpr = read_file(argv[1]);
         //smprint(user_sexpr);
         eval_toplevel(user_sexpr);
