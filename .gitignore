@@ -1,0 +1,7 @@
+.DS_Store
+.cache/
+build/
+.vscode/
+cflisp
+cflisp.exe
+examples/test.lsp

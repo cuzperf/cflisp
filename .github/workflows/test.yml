@@ -1,0 +1,73 @@
+name: TEST
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+
+jobs:
+  build-Linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up cflisp and CMake, gcc12, lcov
+      run: |
+        git submodule update --init --recursive
+        sudo apt update
+        sudo apt install -y cmake gcc g++ lcov
+      shell: bash
+
+    - name: Build project with CMake and Test with coverage
+      run: |
+        rm -rf build
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=ON
+        cmake --build build
+        build/unit_test
+        cmake --build build --target coverage
+      shell: bash
+
+  build-MacOS:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up cflisp and CMake
+      run: |
+        git submodule update --init --recursive
+        brew update
+        brew install cmake
+      shell: bash
+
+    - name: Build project with CMake and Test
+      run: |
+        rm -rf build
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build
+        build/unit_test
+      shell: bash
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up cflisp and CMake
+      run: |
+        git submodule update --init --recursive
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+      shell: powershell
+
+    - name: Build project with CMake and Test
+      run: |
+        rmdir /s /q build
+        cmake -B build
+        cmake --build build --config Debug
+        build\Debug\unit_test.exe
+      shell: cmd
