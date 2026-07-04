@@ -44,7 +44,7 @@ typedef uintptr_t type_t;
 #define is_sym(x) (tag(x) == TAG_SYM)
 #define list(x) (tagptr((x), TAG_LIST))
 #define type(x) *((type_t*)x)
-#define error(...) do { printf(__VA_ARGS__); fprintf(stderr,"\n"); fail(); } while(0)
+#define error(...) do { fprintf(stderr, __VA_ARGS__); fprintf(stderr,"\n"); fail(); } while(0)
 #define head(l) (safe_listval(l)->head)
 #define tail(l) (safe_listval(l)->tail)
 #define head_(l) (list_val(l)->head)
