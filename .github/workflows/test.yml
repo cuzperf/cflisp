@@ -1,11 +1,14 @@
 name: TEST
 
+# on:
+#   push:
+#     branches-ignore:
+#       - gh-pages
+
 on:
   push:
     branches:
       - main
-    branches-ignore:
-      - gh-pages
   pull_request:
     branches:
       - main
