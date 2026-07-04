@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # add lisp
 
-add_library(cflisplib
+add_library(cflisplib SHARED
   src/lisp.h
   src/lisp_internal.h
   src/lisp_core.c
