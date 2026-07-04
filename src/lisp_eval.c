@@ -18,10 +18,15 @@ static inline value_t to_bool(value_t v)
     return (v == NIL || v == EMPTY_LIST) ? NIL : T;
 }
 
-CF_API number_t num_val(value_t x)
+static inline number_t num_val(value_t x)
 {
     assert_type(x, NUM);
     return (number_t)(x >> 2);
+}
+
+CF_API number_t fl_num_val(value_t x)
+{
+    return num_val(x);
 }
 
 /**
