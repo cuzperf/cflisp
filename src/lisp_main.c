@@ -2,18 +2,18 @@
 
 int main(int argc, char* argv[])
 {
-    lisp_init();
+    cf_lisp_init();
     // NOTE: 工作路径必须是 system.lsp 所在路径 [陈智鹏@2026-6-27]
-    value_t sexp = read_file("system.lsp");
-    eval_toplevel(sexp);
+    value_t sexp = cf_read_file("system.lsp");
+    cf_eval_toplevel(sexp);
 
     if (argc > 1) {
         // 纯文件名或全路径文件名
-        value_t user_sexpr = read_file(argv[1]);
-        //smprint(user_sexpr);
-        eval_toplevel(user_sexpr);
+        value_t user_sexpr = cf_read_file(argv[1]);
+        //cf_smprint(user_sexpr);
+        cf_eval_toplevel(user_sexpr);
     } else {
-        lisp_repl();
+        cf_lisp_repl();
     }
     return 0;
 }

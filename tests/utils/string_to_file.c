@@ -1,5 +1,9 @@
 #include "test_utils.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 /**
  * 将字符串写入文件
  * @param filename  文件路径

@@ -1,4 +1,4 @@
-#include "lisp.h"
+#include "lisp_internal.h"
 
 #define INITIAL_HEAP_SIZE (64000)
 #define STACK_SIZE (160 * 1024)
@@ -24,13 +24,13 @@ Symbol* symtab = NULL;
 static int g_stack_size = STACK_SIZE;
 static int g_env_stack_size = ENV_SIZE;
 
-void lisp_init()
+CF_API void cf_lisp_init()
 {
     for (int i = 0; i < N_BUILTINS; ++i) {
         g_builtins[i].type = TYPE_BUILTIN;
         g_builtins[i].code = (BuiltinCode)i;
-        Symbol* tmp = _symbol(builtin_names[i], &symtab);
-        tmp->binding = tagptr(g_builtins + i, TAG_OTHER);
+        value_t tmp = symbol(builtin_names[i], &symtab);
+        sym_val(tmp)->binding = tagptr(g_builtins + i, TAG_OTHER);
     }
 
     g_curheap = g_heap = malloc(INITIAL_HEAP_SIZE);
@@ -58,6 +58,11 @@ void lisp_init()
     sym_val(REST)->binding = REST;
 }
 
+CF_API bool cf_isNIL(value_t v)
+{
+    return v == EMPTY_LIST || v == NIL;
+}
+
 type_t type_of(value_t v)
 {
     type_t t = tag(v);
@@ -67,7 +72,6 @@ type_t type_of(value_t v)
     void* p = ptr(v);           // TODO rise error on null
     return ((Type*)p)->type;
 }
-
 
 // 栈
 value_t* g_stack;

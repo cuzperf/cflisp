@@ -5,13 +5,13 @@
 ;   - Use (- n) for negative numbers (-n is a symbol)
 ;   - Boolean true is '#t, not 'true
 
-(defun lassert (expected actual)
+(defun assert (expected actual)
   (if (= expected actual) 'pass
     (do (print 'FAIL) (print '-expected) (print expected)
         (print '-actual) (print actual) 'fail)))
 
 (defun check (label val expected)
-  (print label) (lassert expected val))
+  (print label) (assert expected val))
 
 ; ============================================================
 ; 1 Arithmetic

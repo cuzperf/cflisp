@@ -15,8 +15,8 @@ value_t cl_eval_string(const char* lispstr)
 
     string_to_file(filename, lispstr, 0);
 
-    value_t sexp = read_file(filename);
-    value_t res = eval_toplevel(sexp);
+    value_t sexp = cf_read_file(filename);
+    value_t res = cf_eval_toplevel(sexp);
 
     delete_file(filename);
 

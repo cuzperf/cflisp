@@ -1,4 +1,4 @@
-#include "lisp.h"
+#include "lisp_internal.h"
 
 /**
  * 本文件对外提供五个接口函数 cons_, cons, push_list, pop_list, make_list
@@ -32,7 +32,7 @@ value_t cons_(value_t h, value_t t)
  */
 value_t cons(value_t h, value_t t)
 {
-    lassert_type(t, LIST);
+    assert_type(t, LIST);
     return cons_(h, t);
 }
 
@@ -42,7 +42,7 @@ value_t cons(value_t h, value_t t)
 void push_list(value_t l)
 {
     for (value_t v = l; v != EMPTY_LIST; v = tail_(v)) {
-        lassert_type(v, LIST);
+        assert_type(v, LIST);
         push(head_(v));
     }
 }

@@ -1,7 +1,7 @@
-#include "lisp.h"
+#include "lisp_internal.h"
 
 /**
- * 本文件对外提供两个接口函数 fl_read_file 和 read
+ * 本文件对外提供两个接口函数 cf_read_file 和 read
  */
 
 // TODO: 补充函数 read_string 读取完整的 lisp 语句，然后进行执行，
@@ -111,7 +111,7 @@ static void read_list(FILE* f, Symbol** env)
             skip_spaces(f);
             continue;
         }
-        fl_read(f, env);
+        read(f, env);
     }
     push(pop_list(ss));
     /* skip_spaces(f); */
@@ -121,9 +121,9 @@ static void read_list(FILE* f, Symbol** env)
 /**
 * @brief 读取文件，向 g_stack 中加入一个元素（读取的内容）
 * @note 中间产生的符号记录在符号环境中
-* @note 检查所有的分支，可归纳fl_readread 向 g_stack 中加入一个元素
+* @note 检查所有的分支，可归纳cf_readread 向 g_stack 中加入一个元素
 */
-void fl_read(FILE* f, Symbol** env)
+void read(FILE* f, Symbol** env)
 {
     char c;
 start:
@@ -141,7 +141,7 @@ start:
         break;
     case '\'':
         getc(f);
-        fl_read(f, env);
+        read(f, env);
         push(make_list(QUOTE, pop(), END));
         break;
     case ',':
@@ -153,13 +153,13 @@ start:
             fgetc(f);
             ut = UNQUOTE_SPLICING;
         }
-        fl_read(f, env);
+        read(f, env);
         push(make_list(ut, pop(), END));
     }
     break;
     case '`':
         getc(f);
-        fl_read(f, env);
+        read(f, env);
         push(make_list(QUASIQUOTE, pop(), END));
         break;
     case '0': case '1': case '2': case '3': case '4':
@@ -181,10 +181,10 @@ start:
 }
 
 /**
- * @brief 打开 name 文件，调fl_readad 函数，处理 g_stack 中内容变成一个 List 作为返回值
+ * @brief 打开 name 文件，调cf_readad 函数，处理 g_stack 中内容变成一个 List 作为返回值
  * @note 最终 g_stack 和 g_sp 无任何变化
  */
-value_t read_file(const char* name)
+CF_API value_t cf_read_file(const char* name)
 {
     FILE* f = fopen(name, "rt");
     if (f == NULL) {
@@ -195,8 +195,8 @@ value_t read_file(const char* name)
     char c;
     while ((c = fpeekc(f)) != EOF) {
         int ss1 = g_sp;
-        fl_read(f, &symtab);
-        lassert(ss1 == g_sp - 1, "fl_read will push exact one element!");
+        read(f, &symtab);
+        cf_assert(ss1 == g_sp - 1, "read will push exact one element!");
         value_t tmp = make_cell(UNBOUND);
         head(tmp) = pop();
         push(tmp);
