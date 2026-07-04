@@ -29,6 +29,11 @@ jobs:
         cmake --build build --target coverage
       shell: bash
 
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   build-MacOS:
     runs-on: macos-latest
 
