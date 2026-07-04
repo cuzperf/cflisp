@@ -26,7 +26,7 @@ static Symbol* make_symbol(const char* name)
     return sym;
 }
 
-#if 1
+#if 0
 static Symbol** symbol_lookup(const char* name, Symbol** env)
 {
     if (*env == NULL) {
