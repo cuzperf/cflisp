@@ -12,7 +12,8 @@ if (MSVC)
   add_compile_options(/W4)      # 警告等级4
   add_compile_options(/wd4819)  # 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 else()
-  add_compile_options(-Wall -Wextra)
+  add_compile_options(-Wall -Wextra)        # 开启警告信息
+  add_compile_options(-fvisibility=hidden)  # 默认符号隐藏
 endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -25,6 +26,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(cflisplib
   src/lisp.h
+  src/lisp_internal.h
   src/lisp_core.c
   src/lisp_dump.c
   src/lisp_eval.c
@@ -34,6 +36,7 @@ add_library(cflisplib
   src/lisp_repl.c
   src/lisp_symbol.c
 )
+target_compile_definitions(cflisplib PRIVATE BUILDING_CF_LIB)
 
 # VS 特有配置
 if (MSVC)

@@ -1,4 +1,4 @@
-#include "lisp.h"
+#include "lisp_internal.h"
 
 /**
  * @brief 字符串 hash, 随便乱写的，能达到相同字符 hash 值相同即可
@@ -26,7 +26,7 @@ static Symbol* make_symbol(const char* name)
     return sym;
 }
 
-#if 0
+#if 1
 static Symbol** symbol_lookup(const char* name, Symbol** env)
 {
     if (*env == NULL) {
@@ -47,7 +47,7 @@ static Symbol** symbol_lookup(const char* name, Symbol** env)
     return env;
 }
 
-Symbol* _symbol(const char* name, Symbol** env)
+static Symbol* _symbol(const char* name, Symbol** env)
 {
     Symbol** t = symbol_lookup(name, env);
     if (*t == NULL) {
@@ -111,7 +111,7 @@ static Symbol* add_symbol(const char* name, Symbol** env)
     return s;
 }
 
-Symbol* _symbol(const char* name, Symbol** env)
+static Symbol* _symbol(const char* name, Symbol** env)
 {
     Symbol* t = find_symbol(name, env);
     return t != NULL ? t : add_symbol(name, env);

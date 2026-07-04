@@ -1,4 +1,4 @@
-#include "lisp.h"
+#include "lisp_internal.h"
 
 /**
  * @brief 将 list 元素反向压栈
@@ -18,13 +18,19 @@ static inline value_t to_bool(value_t v)
     return (v == NIL || v == EMPTY_LIST) ? NIL : T;
 }
 
+CF_API number_t num_val(value_t x)
+{
+    assert_type(x, NUM);
+    return (number_t)(x >> 2);
+}
+
 /**
  * @brief 顶层求值，先反序压栈，再从最底层网上求值
  */
-value_t eval_toplevel(value_t l)
+CF_API value_t cf_eval_toplevel(value_t l)
 {
     value_t res = NIL;
-    lassert(g_sp == 0, "g_sp should be 0 when calling eval_toplevel");
+    cf_assert(g_sp == 0, "g_sp should be 0 when calling eval_toplevel");
 
     if (to_bool(l) == NIL) {
         return res;
@@ -54,7 +60,7 @@ value_t eval(value_t v)
 
 static void _assert_nargs(int _nargs, int n)
 {
-    lassert(_nargs == n, "Error: too %s arguments", (_nargs > n ? "many" : "few"));
+    cf_assert(_nargs == n, "Error: too %s arguments", (_nargs > n ? "many" : "few"));
 }
 #define assert_nargs(n) _assert_nargs(nargs, (n))
 
@@ -69,7 +75,7 @@ static value_t eval_sym(value_t v);
 static value_t eval_sexp(value_t sexp, bool noeval)
 {
     //printf("\neval_sexp:\n");
-    //print(sexp);
+    //cf_print(sexp);
     value_t fun, funtype, args, body;
     BuiltinCode code;
     int nargs, sum;
@@ -84,7 +90,7 @@ eval_top:
         --tail_macro;
     }
     /* printf("Env:");  dump_env(); */
-    /* print(sexp); NL; */
+    /* cf_print(sexp); NL; */
     switch (type_of(sexp)) {
     case TYPE_SYM:
         res = eval_sym(sexp);
@@ -94,8 +100,8 @@ eval_top:
         push(tail(sexp));       //args
         fun = eval(head(sexp));
 apply_top:
-        //println(fun);
-        //println(top());
+        //cf_println(fun);
+        //cf_println(top());
         if (type_of(fun) == TYPE_BUILTIN) {
             goto apply_builtin;
         }
@@ -105,7 +111,7 @@ apply_top:
             body = tail(tail(fun));     // 函数体
             goto apply;
         }
-        //print(fun);
+        //cf_print(fun);
         error("Applying not a function");
         break;
     default:
@@ -130,7 +136,7 @@ apply_builtin:
 
     switch (code) {
     case F_ADD:
-        lassert(nargs > 0, "Too few arguments");
+        cf_assert(nargs > 0, "Too few arguments");
         sum = num_val(pop());
         while (g_sp > ss) {
             sum += num_val(pop());
@@ -138,7 +144,7 @@ apply_builtin:
         res = number(sum);
         break;
     case F_SUB:
-        lassert(nargs > 0, "Too few arguments");
+        cf_assert(nargs > 0, "Too few arguments");
         sum = num_val(pop());
         if (nargs == 1) {
             sum = -sum;
@@ -149,7 +155,7 @@ apply_builtin:
         res = number(sum);
         break;
     case F_MUL:
-        lassert(nargs > 0, "Too few arguments");
+        cf_assert(nargs > 0, "Too few arguments");
         sum = num_val(pop());
         while (g_sp > ss) {
             sum *= num_val(pop());
@@ -157,11 +163,11 @@ apply_builtin:
         res = number(sum);
         break;
     case F_DIV:
-        lassert(nargs > 0, "Too few arguments");
+        cf_assert(nargs > 0, "Too few arguments");
         sum = num_val(pop());
         while (g_sp > ss) {
             number_t num = num_val(pop());
-            lassert(num != 0, "Division by zero");
+            cf_assert(num != 0, "Division by zero");
             sum /= num;
         }
         res = number(sum);
@@ -208,14 +214,14 @@ apply_builtin:
     {
         assert_nargs(1);
         value_t v = pop();
-        lassert_type(v, LIST);
+        assert_type(v, LIST);
         res = head(v);
     }
     break;
     case F_TAIL:
     {
         assert_nargs(1);
-        lassert_type(g_stack[ss], LIST);
+        assert_type(g_stack[ss], LIST);
         res = tail(g_stack[ss]);
     }
     break;
@@ -256,10 +262,10 @@ apply_builtin:
     {
         const char* name = sym_val(head(args))->name;
         value_t sym = symbol(name, &symtab);
-        //println(tail_(args));
-        //println(head(tail_(args)));
+        //cf_println(tail_(args));
+        //cf_println(head(tail_(args)));
         res = eval(head(tail_(args)));
-        //println(res);
+        //cf_println(res);
         sym_val(sym)->binding = res;
     }
     break;
@@ -283,7 +289,7 @@ apply_builtin:
         break;
     case F_PRINT:
         while (g_sp > ss) {
-            println(pop());
+            cf_println(pop());
         }
         break;
     case F_EVAL:
@@ -350,16 +356,16 @@ apply_builtin:
 apply:
     {
         funtype = head(fun);
-        lassert(funtype == FN || funtype == MACRO, "Applying not a function!!!!!");
+        cf_assert(funtype == FN || funtype == MACRO, "Applying not a function!!!!!");
         value_t list = pop();   // 入参
-        //println(list);
-        //println(args);          // 形参
-        //println(body);          // 函数体
+        //cf_println(list);
+        //cf_println(args);          // 形参
+        //cf_println(body);          // 函数体
         push(body);
         push(args);
 
         int ss0 = g_sp;
-        //println(list);
+        //cf_println(list);
         push_list(list);
         for (int i = ss0; i < g_sp; ++i) {
             if (funtype != MACRO && !is_apply) {
@@ -375,8 +381,8 @@ apply:
         args = pop();
         body = pop();
 
-        //println(args);          // 形参
-        //println(body);          // 函数体
+        //cf_println(args);          // 形参
+        //cf_println(body);          // 函数体
 
         push_reverse_list(body);
 
@@ -477,7 +483,7 @@ static value_t copy_body(value_t body)
 
 static void prepare_env(value_t args, int ss)
 {
-    //println(args);
+    //cf_println(args);
     int sp = ss;
     if (is_list(args)) {
         for (value_t h = args; h != EMPTY_LIST; h = tail(h)) {
@@ -519,12 +525,12 @@ static value_t eval_sym(value_t v)
 
     for (int i = g_env_sp - 1; i >= 0; i -= 2) {
         if (g_env_stack[i] == v) {
-            //printf("Sym in g_env_stack:"); print(v); print(g_env_stack[i-1]); NL;
+            //printf("Sym in g_env_stack:"); cf_print(v); cf_print(g_env_stack[i-1]); NL;
             return g_env_stack[i - 1];
         }
     }
 
-    Symbol* sym = _symbol(sym_val(v)->name, &symtab);
+    value_t sym = symbol(sym_val(v)->name, &symtab);
     UNUSED(sym);
 
     return sym_val(v)->binding;

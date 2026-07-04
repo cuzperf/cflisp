@@ -1,4 +1,5 @@
-#include "lisp.h"
+#include "lisp_internal.h"
+
 #include <setjmp.h>
 
 // for error handling in REPL
@@ -14,7 +15,7 @@ void fail()
     }
 }
 
-void lisp_repl()
+CF_API void cf_lisp_repl()
 {
     in_repl = true;
     while (true) {
@@ -24,10 +25,10 @@ void lisp_repl()
         int ee = g_env_sp;
 
         if (!setjmp(jmp_mark)) {
-            fl_read(stdin, &symtab);
+            read(stdin, &symtab);
             if (ss != g_sp) {
                 value_t res = eval(pop());
-                print(res);
+                cf_print(res);
             }
         } else {
             restore_stack(ss);

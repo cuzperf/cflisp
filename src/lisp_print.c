@@ -1,4 +1,4 @@
-#include "lisp.h"
+#include "lisp_internal.h"
 
 static void print_list(value_t v)
 {
@@ -10,7 +10,7 @@ static void print_list(value_t v)
     if (head(v) == QUOTE) {
         printf("'");
         if (tail(v) != EMPTY_LIST) {
-            print(head(tail(v)));
+            cf_print(head(tail(v)));
         }
         return;
     }
@@ -18,7 +18,7 @@ static void print_list(value_t v)
     if (head(v) == QUASIQUOTE) {
         printf("`");
         if (tail(v) != EMPTY_LIST) {
-            print(head(tail(v)));
+            cf_print(head(tail(v)));
         }
         return;
     }
@@ -26,7 +26,7 @@ static void print_list(value_t v)
     if (head(v) == UNQUOTE) {
         printf(",");
         if (tail(v) != EMPTY_LIST) {
-            print(head(tail(v)));
+            cf_print(head(tail(v)));
         }
         return;
     }
@@ -34,7 +34,7 @@ static void print_list(value_t v)
     if (head(v) == UNQUOTE_SPLICING) {
         printf(",@");
         if (tail(v) != EMPTY_LIST) {
-            print(head(tail(v)));
+            cf_print(head(tail(v)));
         }
         return;
     }
@@ -43,12 +43,12 @@ static void print_list(value_t v)
 
     if (head(v) == RELOCATED_MARK) {
         printf("Relocated");
-        print(tail(v));
+        cf_print(tail(v));
         return;
     }
 
     while (1) {
-        print(head(v));
+        cf_print(head(v));
         v = tail(v);
         if (v == EMPTY_LIST) {
             break;
@@ -58,7 +58,7 @@ static void print_list(value_t v)
     printf(")");
 }
 
-void print(value_t v)
+CF_API void cf_print(value_t v)
 {
     switch (type_of(v)) {
     case TYPE_LIST:
@@ -83,9 +83,9 @@ void print(value_t v)
     }
 }
 
-void println(value_t v)
+CF_API void cf_println(value_t v)
 {
-    print(v);
+    cf_print(v);
     NL;
 }
 
@@ -196,7 +196,7 @@ static void pprint_(value_t v, int depth)
     }
 }
 
-void pprint(value_t v)
+CF_API void cf_pprint(value_t v)
 {
     pprint_(v, 0);
     NL;
@@ -214,11 +214,11 @@ static void smprint_inner(value_t v, int depth)
     switch (t) {
     case TAG_NUM:
         printf("[ NUM 0x%p] ", (void*)v);
-        println(v);
+        cf_println(v);
         break;
     case TAG_LIST:
         printf("[LIST 0x%p] ", (void*)v);
-        println(v);
+        cf_println(v);
         if (v != EMPTY_LIST && v != RELOCATED_MARK) {
             indent(depth + 2);
             printf("head:\n");
@@ -255,7 +255,7 @@ static void smprint_inner(value_t v, int depth)
     }
 }
 
-void smprint(value_t v)
+CF_API void cf_smprint(value_t v)
 {
     smprint_inner(v, 0);
 }
