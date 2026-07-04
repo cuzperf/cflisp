@@ -26,7 +26,7 @@ static Symbol* make_symbol(const char* name)
     return sym;
 }
 
-#if 0
+#if 1
 static Symbol** symbol_lookup(const char* name, Symbol** env)
 {
     if (*env == NULL) {
@@ -34,14 +34,14 @@ static Symbol** symbol_lookup(const char* name, Symbol** env)
     }
     hash_t hash = string_hash(name);
     while (*env != NULL) {
-        if (hash == (*env)->hash && strcmp(name, (*env)->name)) {
+        if (hash == (*env)->hash && strcmp(name, (*env)->name) == 0) {
             return env;
         }
 
-        if (hash < (*env)->hash) {
-            env = &(*env)->left;
+        if (hash > (*env)->hash) {
+            env = &((*env)->right);
         } else {
-            env = &(*env)->right;
+            env = &((*env)->left);
         }
     }
     return env;
