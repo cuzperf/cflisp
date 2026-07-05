@@ -235,7 +235,7 @@ TEST_F(LispTest, testOR_3)
 
 TEST_F(LispTest, testPrint)
 {
-    value_t res = cl_eval_string("(print `(1 2 3 4))");
+    value_t res = cl_eval_string("(print `())\n(print '(1 '(1 2) 2))\n(print '(1 `(1 2) 2))\n(print '(1 ,(+ 1 2) 2))\n(print '(1 ,@(+ 1 2) 2))\n(print `(1 2 3 4))");
     EXPECT_TRUE(cf_isNIL(res));
 }
 
