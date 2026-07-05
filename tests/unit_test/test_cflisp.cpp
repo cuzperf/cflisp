@@ -238,6 +238,16 @@ TEST_F(LispTest, testPrint)
     value_t res = cl_eval_string("(print `())\n(print '(1 '(1 2) 2))\n(print '(1 `(1 2) 2))\n(print '(1 ,(+ 1 2) 2))\n(print '(1 ,@(+ 1 2) 2))\n(print `(1 2 3 4))");
     EXPECT_TRUE(cf_isNIL(res));
 }
+TEST_F(LispTest, testPrintUnbound)
+{
+    value_t unbound = cf_read_file("");
+    cf_print(unbound);
+}
+TEST_F(LispTest, testPrintPrint)
+{
+    value_t res = cl_eval_string("(print print)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
 
 TEST_F(LispTest, testEval)
 {
