@@ -179,3 +179,45 @@ TEST_F(LispTest, testBuiltin_3)
     EXPECT_TRUE(cf_isNIL(res));
 }
 
+TEST_F(LispTest, testNot_1)
+{
+    value_t res = cl_eval_string("(not (< 1 2))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNot_2)
+{
+    value_t res = cl_eval_string("(not (> 1 2))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testAnd_1)
+{
+    value_t res = cl_eval_string("(and (< 1 2) (< 2 3) (< 3 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testAnd_2)
+{
+    value_t res = cl_eval_string("(and (< 1 2) (< 2 1))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testAnd_3)
+{
+    value_t res = cl_eval_string("(and (> 1 2) (> 2 3))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testOr_1)
+{
+    value_t res = cl_eval_string("(or (< 1 2) (< 2 3) (< 3 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testOR_2)
+{
+    value_t res = cl_eval_string("(or (< 1 2) (< 2 1))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testOR_3)
+{
+    value_t res = cl_eval_string("(or (> 1 2) (> 2 3))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
