@@ -19,6 +19,9 @@ endif()
 
 set(THIRD_PARTY_FILES "*/third_party/*")
 set(TEST_FILES "*/tests/*")
+set(IGNORE_FILES1 "*/src/lisp_main.c")
+set(IGNORE_FILES2 "*/src/lisp_repl.c")
+set(IGNORE_FILES3 "*/src/lisp_dump.c")
 
 # 检测 lcov 版本，动态设置参数
 execute_process(
@@ -41,7 +44,7 @@ message(STATUS " LCOV_IGNORE_ERRORS=${LCOV_IGNORE_ERRORS}")
 
 # Generate coverage data
 add_custom_target(coverage
-  COMMAND lcov ${LCOV_IGNORE_ERRORS} --directory . --capture --exclude "${THIRD_PARTY_FILES}" --exclude "${TEST_FILES}" --output-file coverageall.info
+  COMMAND lcov ${LCOV_IGNORE_ERRORS} --directory . --capture --exclude "${THIRD_PARTY_FILES}" --exclude "${TEST_FILES}" --exclude "${IGNORE_FILES1}" --exclude "${IGNORE_FILES2}" --exclude "${IGNORE_FILES3}" --output-file coverageall.info
   COMMAND lcov ${LCOV_IGNORE_ERRORS} --remove coverageall.info ${LCOV_REMOVE_EXTRA} --output-file coverage.info
   COMMAND genhtml coverage.info --output-directory coverage
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
