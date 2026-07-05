@@ -275,8 +275,8 @@ TEST_F(LispTest, testCons_1)
 }
 TEST_F(LispTest, testCons_2)
 {
-    value_t res = cl_eval_string("(= (cons 1 (list 2 3)) (list 1 2 4))");
-    EXPECT_FALSE(cf_isNIL(res));
+    value_t res = cl_eval_string("(= (cons 1 (list 3 4)) (list 1 2 4))");
+    EXPECT_TRUE(cf_isNIL(res));
 }
 
 TEST_F(LispTest, testUnquote)
