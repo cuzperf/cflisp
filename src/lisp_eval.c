@@ -425,7 +425,7 @@ static value_t eqp(value_t v1, value_t v2)
     }
 
     while (v1 != EMPTY_LIST && v2 != EMPTY_LIST) {
-        if (!eqp(head(v1), head(v2))) {
+        if (eqp(head(v1), head(v2)) == NIL) {
             return NIL;
         }
         v1 = tail(v1);
