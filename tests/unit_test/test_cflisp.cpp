@@ -22,11 +22,11 @@ TEST_F(LispTest, testEmpty)
 TEST_F(LispTest, testAdd)
 {
     value_t res = cl_eval_string("(+ 1 2)");
-    EXPECT_EQ(fl_num_val(res), 3);
+    EXPECT_EQ(cf_num_val(res), 3);
 }
 
 TEST_F(LispTest, testAdd2)
 {
     value_t res = cl_eval_string("(+ 1 2)\n(- 5)");
-    EXPECT_EQ(fl_num_val(res), -5);
+    EXPECT_EQ(cf_num_val(res), -5);
 }

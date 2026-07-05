@@ -36,7 +36,7 @@ CF_API void cf_smprint(value_t v);
 
 // lisp_eval.c
 CF_API value_t cf_eval_toplevel(value_t l);
-CF_API number_t fl_num_val(value_t x);
+CF_API number_t cf_num_val(value_t x);
 
 // lisp_core.c
 CF_API void cf_lisp_init();

@@ -65,7 +65,7 @@ CF_API void cf_print(value_t v)
         print_list(v);
         break;
     case TYPE_NUM:
-        printf("%d", fl_num_val(v));
+        printf("%d", cf_num_val(v));
         break;
     case TYPE_SYM:
         if (v == UNBOUND) {
@@ -178,7 +178,7 @@ static void pprint_(value_t v, int depth)
         }
         break;
     case TYPE_NUM:
-        printf("%d", fl_num_val(v));
+        printf("%d", cf_num_val(v));
         break;
     case TYPE_SYM:
         if (v == UNBOUND) {

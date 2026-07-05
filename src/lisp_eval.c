@@ -24,7 +24,7 @@ static inline number_t num_val(value_t x)
     return (number_t)(x >> 2);
 }
 
-CF_API number_t fl_num_val(value_t x)
+CF_API number_t cf_num_val(value_t x)
 {
     return num_val(x);
 }
