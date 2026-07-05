@@ -230,11 +230,15 @@ static void smprint_inner(value_t v, int depth)
         break;
     case TAG_SYM:
     {
-        Symbol* s = sym_val(v);
-        printf("[ SYM 0x%p] name=\"%s\"  hash=%u  binding=0x%p\n",
-            (void*)v, s->name, s->hash, (void*)s->binding);
-        indent(depth + 2);
-        printf("left=%p  right=%p\n", (void*)s->left, (void*)s->right);
+        if (v == UNBOUND) {
+            printf("unbound\n");
+        } else {
+            Symbol* s = sym_val(v);
+            printf("[ SYM 0x%p] name=\"%s\"  hash=%u  binding=0x%p\n",
+                (void*)v, s->name, s->hash, (void*)s->binding);
+            indent(depth + 2);
+            printf("left=%p  right=%p\n", (void*)s->left, (void*)s->right);
+        }
         break;
     }
     case TAG_OTHER:

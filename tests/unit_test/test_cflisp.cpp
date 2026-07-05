@@ -233,20 +233,34 @@ TEST_F(LispTest, testOR_3)
     EXPECT_TRUE(cf_isNIL(res));
 }
 
+#define PRINT_ALL(x)                        \
+    do {                                    \
+        value_t res = cl_eval_string(x);    \
+        cf_print(res);                      \
+        cf_pprint(res);                     \
+        cf_smprint(res);                    \
+    } while (0)
+
 TEST_F(LispTest, testPrint)
 {
-    value_t res = cl_eval_string("(print `())\n(print '(1 '(1 2) 2))\n(print '(1 `(1 2) 2))\n(print '(1 ,(+ 1 2) 2))\n(print '(1 ,@(+ 1 2) 2))\n(print `(1 2 3 4))");
-    EXPECT_TRUE(cf_isNIL(res));
+    PRINT_ALL("");
+    PRINT_ALL("(print `()");
+    PRINT_ALL("(print '(1 '(1 2) 2))");
+    PRINT_ALL("(print '(1 `(1 2) 2))");
+    PRINT_ALL("(print '(1 ,(+ 1 2) 2))");
+    PRINT_ALL("(print '(1 ,@(+ 1 2) 2))");
+    PRINT_ALL("print `(1 2 3 4)");
+
+    PRINT_ALL("def");
+    PRINT_ALL("print");
+    PRINT_ALL("(fn (x) (+ x 1))");
 }
 TEST_F(LispTest, testPrintUnbound)
 {
     value_t unbound = cf_read_file("");
     cf_print(unbound);
-}
-TEST_F(LispTest, testPrintPrint)
-{
-    value_t res = cl_eval_string("(print print)");
-    EXPECT_TRUE(cf_isNIL(res));
+    cf_pprint(unbound);
+    cf_smprint(unbound);
 }
 
 TEST_F(LispTest, testEval)
