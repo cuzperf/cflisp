@@ -258,8 +258,25 @@ TEST_F(LispTest, testDo)
     EXPECT_EQ(cf_num_val(res), 3);
 }
 
-TEST_F(LispTest, testCons)
+TEST_F(LispTest, testCons_1)
 {
     value_t res = cl_eval_string("(= (cons 1 (list 2 3 4)) (list 1 2 3 4))");
     EXPECT_FALSE(cf_isNIL(res));
 }
+TEST_F(LispTest, testCons_2)
+{
+    value_t res = cl_eval_string("(= (cons 1 (list 2 3)) (list 1 2 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testUnquote)
+{
+    value_t res = cl_eval_string("(def x '(1 2 3))\n`(= (list ,x) (list (1 2 3)))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testUnquoteSplicing)
+{
+    value_t res = cl_eval_string("(def x '(1 2 3))\n`(= (list ,@x) (list 1 2 3))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
