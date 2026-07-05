@@ -18,7 +18,6 @@ TEST_F(LispTest, testEmpty1)
     value_t res = cl_eval_string("");
     EXPECT_TRUE(cf_isNIL(res));
 }
-
 TEST_F(LispTest, testEmpty2)
 {
     value_t res = cl_eval_string("\n");
@@ -30,13 +29,11 @@ TEST_F(LispTest, testAdd1)
     value_t res = cl_eval_string("(+ 1)");
    EXPECT_EQ(cf_num_val(res), 1);
 }
-
 TEST_F(LispTest, testAdd2)
 {
     value_t res = cl_eval_string("(+ 1 2)");
     EXPECT_EQ(cf_num_val(res), 3);
 }
-
 TEST_F(LispTest, testAdd3)
 {
     value_t res = cl_eval_string("\n(+ 1 2 3)");
@@ -48,13 +45,11 @@ TEST_F(LispTest, testSub1)
     value_t res = cl_eval_string("(- 1)");
     EXPECT_EQ(cf_num_val(res), -1);
 }
-
 TEST_F(LispTest, testSub2)
 {
     value_t res = cl_eval_string("(- 1 2)");
     EXPECT_EQ(cf_num_val(res), -1);
 }
-
 TEST_F(LispTest, testSub3)
 {
     value_t res = cl_eval_string("(- 1 2 3)");
@@ -66,13 +61,11 @@ TEST_F(LispTest, testMul1)
     value_t res = cl_eval_string("(* 2)");
     EXPECT_EQ(cf_num_val(res), 2);
 }
-
 TEST_F(LispTest, testMul2)
 {
     value_t res = cl_eval_string("(* (- 2) 3)");
     EXPECT_EQ(cf_num_val(res), -6);
 }
-
 TEST_F(LispTest, testMul3)
 {
     value_t res = cl_eval_string("(* (- 2) 3 (- 4))");
@@ -85,15 +78,45 @@ TEST_F(LispTest, testDiv1)
     // NOTE: 这是否合理呢？ [陈智鹏@2026-7-5]
     EXPECT_EQ(cf_num_val(res), 2);
 }
-
 TEST_F(LispTest, testDiv2)
 {
     value_t res = cl_eval_string("(/ 4 2)");
     EXPECT_EQ(cf_num_val(res), 2);
 }
-
 TEST_F(LispTest, testDiv2_2)
 {
     value_t res = cl_eval_string("(/ 3 2)");
     EXPECT_EQ(cf_num_val(res), 1);
+}
+
+TEST_F(LispTest, testLT_1)
+{
+    value_t res = cl_eval_string("(< 2 3)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testLT_2)
+{
+    value_t res = cl_eval_string("(< 3 2)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testLT_3)
+{
+    value_t res = cl_eval_string("(< 3 3)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testGT_1)
+{
+    value_t res = cl_eval_string("(> 2 3)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testGT_2)
+{
+    value_t res = cl_eval_string("(> 3 2)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testGT_3)
+{
+    value_t res = cl_eval_string("(> 3 3)");
+    EXPECT_TRUE(cf_isNIL(res));
 }
