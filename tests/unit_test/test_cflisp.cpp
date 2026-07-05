@@ -24,6 +24,17 @@ TEST_F(LispTest, testEmpty2)
     EXPECT_TRUE(cf_isNIL(res));
 }
 
+TEST_F(LispTest, testComments_1)
+{
+    value_t res = cl_eval_string("; (print 123)\n(print 456)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testComments_2)
+{
+    value_t res = cl_eval_string("; (print 123);\n(+ 1 2)");
+    EXPECT_EQ(cf_num_val(res), 3);
+}
+
 TEST_F(LispTest, testAdd1)
 {
     value_t res = cl_eval_string("(+ 1)");
