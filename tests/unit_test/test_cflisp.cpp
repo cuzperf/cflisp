@@ -120,3 +120,62 @@ TEST_F(LispTest, testGT_3)
     value_t res = cl_eval_string("(> 3 3)");
     EXPECT_TRUE(cf_isNIL(res));
 }
+
+TEST_F(LispTest, testSymbol_1)
+{
+    value_t res = cl_eval_string("(symbol? 1)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testSymbol_2)
+{
+    value_t res = cl_eval_string("(symbol? def)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testSymbol_3)
+{
+    value_t res = cl_eval_string("(def x 1)\n(symbol? x)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testSymbol_4)
+{
+    value_t res = cl_eval_string("(def x 1)\n(symbol? 'x)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testNumber_1)
+{
+    value_t res = cl_eval_string("(number? 1)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNumber_2)
+{
+    value_t res = cl_eval_string("(number? def)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNumber_3)
+{
+    value_t res = cl_eval_string("(def x 1)\n(number? x)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNumber_4)
+{
+    value_t res = cl_eval_string("(def x 1)\n(number? 'x)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testBuiltin_1)
+{
+    value_t res = cl_eval_string("(builtin? 1)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testBuiltin_2)
+{
+    value_t res = cl_eval_string("(builtin? def)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testBuiltin_3)
+{
+    value_t res = cl_eval_string("(def x 1)\n(builtin? x)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
