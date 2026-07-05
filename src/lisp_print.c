@@ -94,7 +94,7 @@ static inline void indent(int depth)
     printf("%*s", depth, "");
 }
 
-static void smprint_inner(value_t v, int depth)
+static void mprint_(value_t v, int depth)
 {
     indent(depth);
     type_t t = tag(v);
@@ -109,10 +109,10 @@ static void smprint_inner(value_t v, int depth)
         if (v != EMPTY_LIST && v != RELOCATED_MARK) {
             indent(depth + 2);
             printf("head:\n");
-            smprint_inner(head_(v), depth + 4);
+            mprint_(head_(v), depth + 4);
             indent(depth + 2);
             printf("tail:\n");
-            smprint_inner(tail_(v), depth + 4);
+            mprint_(tail_(v), depth + 4);
         }
         break;
     case TAG_SYM:
@@ -146,7 +146,10 @@ static void smprint_inner(value_t v, int depth)
     }
 }
 
-CF_API void cf_smprint(value_t v)
+/**
+ * @brief 打印的同时输出内存布局，方便调试
+ */
+CF_API void cf_mprint(value_t v)
 {
-    smprint_inner(v, 0);
+    mprint_(v, 0);
 }

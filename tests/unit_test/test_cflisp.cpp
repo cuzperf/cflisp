@@ -237,7 +237,7 @@ TEST_F(LispTest, testOR_3)
     do {                                    \
         value_t res = cl_eval_string(x);    \
         cf_print(res);                      \
-        cf_smprint(res);                    \
+        cf_mprint(res);                    \
     } while (0)
 
 TEST_F(LispTest, testPrint)
@@ -261,7 +261,7 @@ TEST_F(LispTest, testPrintUnbound)
 {
     value_t unbound = cf_read_file("");
     cf_print(unbound);
-    cf_smprint(unbound);
+    cf_mprint(unbound);
 }
 
 TEST_F(LispTest, testEval)

@@ -31,7 +31,7 @@ CF_API value_t cf_read_file(const char* name);
 // lisp_print.c
 CF_API void cf_print(value_t v);
 CF_API void cf_println(value_t v);
-CF_API void cf_smprint(value_t v);
+CF_API void cf_mprint(value_t v);
 
 // lisp_eval.c
 CF_API value_t cf_eval_toplevel(value_t l);
