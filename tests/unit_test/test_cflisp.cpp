@@ -221,3 +221,34 @@ TEST_F(LispTest, testOR_3)
     value_t res = cl_eval_string("(or (> 1 2) (> 2 3))");
     EXPECT_TRUE(cf_isNIL(res));
 }
+
+TEST_F(LispTest, testPrint)
+{
+    value_t res = cl_eval_string("(print `(1 2 3 4))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testEval)
+{
+    value_t res = cl_eval_string("(eval `(+ 1 2 3 4))");
+    EXPECT_EQ(cf_num_val(res), 10);
+}
+
+TEST_F(LispTest, testApply)
+{
+    value_t res = cl_eval_string("(apply + `(1 2 3 4))");
+    EXPECT_EQ(cf_num_val(res), 10);
+}
+
+TEST_F(LispTest, testDo)
+{
+    // NOTE: flisp 的 do 和 Common Lisp 中的不一致 [陈智鹏@2026-7-5]
+    value_t res = cl_eval_string("(do (print 1) (print 2) (+ 1 2))");
+    EXPECT_EQ(cf_num_val(res), 3);
+}
+
+TEST_F(LispTest, testCons)
+{
+    value_t res = cl_eval_string("(= (cons 1 (list 2 3 4)) (list 1 2 3 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
