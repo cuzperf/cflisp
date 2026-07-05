@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "test_utils.h"
-
+#include "stdio.h"
 
 class LispTest : public ::testing::Test {
  protected:
@@ -233,20 +233,37 @@ TEST_F(LispTest, testOR_3)
     EXPECT_TRUE(cf_isNIL(res));
 }
 
+#define PRINT_ALL(x)                        \
+    do {                                    \
+        value_t res = cl_eval_string(x);    \
+        cf_print(res);                      \
+        cf_pprint(res);                     \
+        cf_smprint(res);                    \
+    } while (0)
+
 TEST_F(LispTest, testPrint)
 {
-    value_t res = cl_eval_string("(print `())\n(print '(1 '(1 2) 2))\n(print '(1 `(1 2) 2))\n(print '(1 ,(+ 1 2) 2))\n(print '(1 ,@(+ 1 2) 2))\n(print `(1 2 3 4))");
-    EXPECT_TRUE(cf_isNIL(res));
+    PRINT_ALL("");
+    PRINT_ALL("(print `()");
+    PRINT_ALL("(print '(1 '(1 2) 2))");
+    PRINT_ALL("(print '(1 `(1 2) 2))");
+    PRINT_ALL("(print '(1 ,(+ 1 2) 2))");
+    PRINT_ALL("(print '(1 ,@(+ 1 2) 2))");
+    PRINT_ALL("print `(1 2 3 4)");
+
+    PRINT_ALL("def");
+    PRINT_ALL("print");
+    PRINT_ALL("(fn (x) (+ x 1))");
+
+    // NOTE: list 内部函数有注释的情况 [陈智鹏@2026-7-5]
+    PRINT_ALL("(print `(1 2 ;3 \n4)");
 }
 TEST_F(LispTest, testPrintUnbound)
 {
     value_t unbound = cf_read_file("");
     cf_print(unbound);
-}
-TEST_F(LispTest, testPrintPrint)
-{
-    value_t res = cl_eval_string("(print print)");
-    EXPECT_TRUE(cf_isNIL(res));
+    cf_pprint(unbound);
+    cf_smprint(unbound);
 }
 
 TEST_F(LispTest, testEval)
@@ -290,3 +307,26 @@ TEST_F(LispTest, testUnquoteSplicing)
     EXPECT_FALSE(cf_isNIL(res));
 }
 
+#define MAX_NAME 256
+static void symbolExitMaxName()
+{
+    char a[MAX_NAME + 2];
+    memset(a, 'a', sizeof(a));
+    char buf[MAX_NAME + 20];
+    // NOTE: symbol 符号超过最大限制 [陈智鹏@2026-7-5]
+    sprintf(buf, "(def %s 1)", a);
+    cl_eval_string(buf);
+}
+TEST_F(LispTest, HandleExit_1)
+{
+    EXPECT_EXIT(symbolExitMaxName(), ::testing::ExitedWithCode(1), "");
+}
+
+static void unmatchedClosingParentesis()
+{
+    cl_eval_string(")");
+}
+TEST_F(LispTest, HandleExit_2)
+{
+    EXPECT_EXIT(unmatchedClosingParentesis(), ::testing::ExitedWithCode(1), "");
+}
