@@ -13,20 +13,280 @@ class LispTest : public ::testing::Test {
   }
 };
 
-TEST_F(LispTest, testEmpty)
+TEST_F(LispTest, testEmpty1)
 {
     value_t res = cl_eval_string("");
     EXPECT_TRUE(cf_isNIL(res));
 }
+TEST_F(LispTest, testEmpty2)
+{
+    value_t res = cl_eval_string("\n");
+    EXPECT_TRUE(cf_isNIL(res));
+}
 
-TEST_F(LispTest, testAdd)
+TEST_F(LispTest, testComments_1)
+{
+    value_t res = cl_eval_string("; (print 123)\n(print 456)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testComments_2)
+{
+    value_t res = cl_eval_string("; (print 123);\n(+ 1 2)");
+    EXPECT_EQ(cf_num_val(res), 3);
+}
+
+TEST_F(LispTest, testAdd1)
+{
+    value_t res = cl_eval_string("(+ 1)");
+   EXPECT_EQ(cf_num_val(res), 1);
+}
+TEST_F(LispTest, testAdd2)
 {
     value_t res = cl_eval_string("(+ 1 2)");
     EXPECT_EQ(cf_num_val(res), 3);
 }
-
-TEST_F(LispTest, testAdd2)
+TEST_F(LispTest, testAdd3)
 {
-    value_t res = cl_eval_string("(+ 1 2)\n(- 5)");
-    EXPECT_EQ(cf_num_val(res), -5);
+    value_t res = cl_eval_string("\n(+ 1 2 3)");
+    EXPECT_EQ(cf_num_val(res), 6);
 }
+
+TEST_F(LispTest, testSub1)
+{
+    value_t res = cl_eval_string("(- 1)");
+    EXPECT_EQ(cf_num_val(res), -1);
+}
+TEST_F(LispTest, testSub2)
+{
+    value_t res = cl_eval_string("(- 1 2)");
+    EXPECT_EQ(cf_num_val(res), -1);
+}
+TEST_F(LispTest, testSub3)
+{
+    value_t res = cl_eval_string("(- 1 2 3)");
+    EXPECT_EQ(cf_num_val(res), -4);
+}
+
+TEST_F(LispTest, testMul1)
+{
+    value_t res = cl_eval_string("(* 2)");
+    EXPECT_EQ(cf_num_val(res), 2);
+}
+TEST_F(LispTest, testMul2)
+{
+    value_t res = cl_eval_string("(* (- 2) 3)");
+    EXPECT_EQ(cf_num_val(res), -6);
+}
+TEST_F(LispTest, testMul3)
+{
+    value_t res = cl_eval_string("(* (- 2) 3 (- 4))");
+    EXPECT_EQ(cf_num_val(res), 24);
+}
+
+TEST_F(LispTest, testDiv1)
+{
+    value_t res = cl_eval_string("(/ 2)");
+    // NOTE: 这是否合理呢？ [陈智鹏@2026-7-5]
+    EXPECT_EQ(cf_num_val(res), 2);
+}
+TEST_F(LispTest, testDiv2)
+{
+    value_t res = cl_eval_string("(/ 4 2)");
+    EXPECT_EQ(cf_num_val(res), 2);
+}
+TEST_F(LispTest, testDiv2_2)
+{
+    value_t res = cl_eval_string("(/ 3 2)");
+    EXPECT_EQ(cf_num_val(res), 1);
+}
+
+TEST_F(LispTest, testLT_1)
+{
+    value_t res = cl_eval_string("(< 2 3)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testLT_2)
+{
+    value_t res = cl_eval_string("(< 3 2)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testLT_3)
+{
+    value_t res = cl_eval_string("(< 3 3)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testGT_1)
+{
+    value_t res = cl_eval_string("(> 2 3)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testGT_2)
+{
+    value_t res = cl_eval_string("(> 3 2)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testGT_3)
+{
+    value_t res = cl_eval_string("(> 3 3)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testSymbol_1)
+{
+    value_t res = cl_eval_string("(symbol? 1)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testSymbol_2)
+{
+    value_t res = cl_eval_string("(symbol? def)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testSymbol_3)
+{
+    value_t res = cl_eval_string("(def x 1)\n(symbol? x)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testSymbol_4)
+{
+    value_t res = cl_eval_string("(def x 1)\n(symbol? 'x)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testNumber_1)
+{
+    value_t res = cl_eval_string("(number? 1)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNumber_2)
+{
+    value_t res = cl_eval_string("(number? def)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNumber_3)
+{
+    value_t res = cl_eval_string("(def x 1)\n(number? x)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNumber_4)
+{
+    value_t res = cl_eval_string("(def x 1)\n(number? 'x)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testBuiltin_1)
+{
+    value_t res = cl_eval_string("(builtin? 1)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testBuiltin_2)
+{
+    value_t res = cl_eval_string("(builtin? def)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testBuiltin_3)
+{
+    value_t res = cl_eval_string("(def x 1)\n(builtin? x)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testNot_1)
+{
+    value_t res = cl_eval_string("(not (< 1 2))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNot_2)
+{
+    value_t res = cl_eval_string("(not (> 1 2))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testAnd_1)
+{
+    value_t res = cl_eval_string("(and (< 1 2) (< 2 3) (< 3 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testAnd_2)
+{
+    value_t res = cl_eval_string("(and (< 1 2) (< 2 1))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testAnd_3)
+{
+    value_t res = cl_eval_string("(and (> 1 2) (> 2 3))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testOr_1)
+{
+    value_t res = cl_eval_string("(or (< 1 2) (< 2 3) (< 3 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testOR_2)
+{
+    value_t res = cl_eval_string("(or (< 1 2) (< 2 1))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testOR_3)
+{
+    value_t res = cl_eval_string("(or (> 1 2) (> 2 3))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testPrint)
+{
+    value_t res = cl_eval_string("(print `())\n(print '(1 '(1 2) 2))\n(print '(1 `(1 2) 2))\n(print '(1 ,(+ 1 2) 2))\n(print '(1 ,@(+ 1 2) 2))\n(print `(1 2 3 4))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testPrintUnbound)
+{
+    value_t unbound = cf_read_file("");
+    cf_print(unbound);
+}
+TEST_F(LispTest, testPrintPrint)
+{
+    value_t res = cl_eval_string("(print print)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testEval)
+{
+    value_t res = cl_eval_string("(eval `(+ 1 2 3 4))");
+    EXPECT_EQ(cf_num_val(res), 10);
+}
+
+TEST_F(LispTest, testApply)
+{
+    value_t res = cl_eval_string("(apply + `(1 2 3 4))");
+    EXPECT_EQ(cf_num_val(res), 10);
+}
+
+TEST_F(LispTest, testDo)
+{
+    // NOTE: flisp 的 do 和 Common Lisp 中的不一致 [陈智鹏@2026-7-5]
+    value_t res = cl_eval_string("(do (print 1) (print 2) (+ 1 2))");
+    EXPECT_EQ(cf_num_val(res), 3);
+}
+
+TEST_F(LispTest, testCons_1)
+{
+    value_t res = cl_eval_string("(= (cons 1 (list 2 3 4)) (list 1 2 3 4))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testCons_2)
+{
+    value_t res = cl_eval_string("(= (cons 1 (list 3 4)) (list 1 2 4))");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+TEST_F(LispTest, testUnquote)
+{
+    value_t res = cl_eval_string("(def x '(1 2 3))\n`(= (list ,x) (list (1 2 3)))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+TEST_F(LispTest, testUnquoteSplicing)
+{
+    value_t res = cl_eval_string("(def x '(1 2 3))\n`(= (list ,@x) (list 1 2 3))");
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
