@@ -305,6 +305,14 @@ TEST_F(LispTest, testUnquoteSplicing)
     EXPECT_FALSE(cf_isNIL(res));
 }
 
+
+TEST_F(LispTest, testExample)
+{
+    value_t sexp = cf_read_file("examples/example.lsp");
+    value_t res = cf_eval_toplevel(sexp);
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
 #define MAX_NAME 256
 static void symbolExitMaxName()
 {
