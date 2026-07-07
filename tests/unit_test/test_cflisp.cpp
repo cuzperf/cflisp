@@ -336,3 +336,12 @@ TEST_F(LispTest, HandleExit_2)
 {
     EXPECT_EXIT(unmatchedClosingParentesis(), ::testing::ExitedWithCode(1), "");
 }
+
+static void applyNotAFunction()
+{
+    cl_eval_string("(1 2)");
+}
+TEST_F(LispTest, HandleExit_3)
+{
+    EXPECT_EXIT(applyNotAFunction(), ::testing::ExitedWithCode(1), "");
+}
