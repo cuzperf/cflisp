@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "test_utils.h"
 #include "stdio.h"
+#include <stdlib.h>
 
 class LispTest : public ::testing::Test {
  protected:
@@ -344,4 +345,24 @@ static void applyNotAFunction()
 TEST_F(LispTest, HandleExit_3)
 {
     EXPECT_EXIT(applyNotAFunction(), ::testing::ExitedWithCode(1), "");
+}
+
+#define STACK_SIZE (160 * 1024)
+static void stackOverflow()
+{
+    char* a = (char*)malloc(STACK_SIZE * 2 + 4);
+    a[0] = '(';
+    a[1] = '+';
+    a[2] = ' ';
+    for (int i = 0; i < STACK_SIZE; ++i) {
+        a[i * 2 + 3] = '1';
+        a[i * 2 + 4] = ' ';
+    }
+    a[STACK_SIZE * 2 + 2] = ')';
+    a[STACK_SIZE * 2 + 3] = '\0';
+    cl_eval_string(a);
+}
+TEST_F(LispTest, HandleExit_4)
+{
+    EXPECT_EXIT(stackOverflow(), ::testing::ExitedWithCode(1), "");
 }
