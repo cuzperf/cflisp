@@ -86,20 +86,9 @@ void push(value_t v)
     ++g_sp;
 }
 
-value_t top()
-{
-    return g_stack[g_sp - 1];
-}
-
 value_t pop()
 {
     return g_stack[--g_sp];
-}
-
-value_t popn(int n)
-{
-    g_sp -= n;
-    return g_stack[g_sp];
 }
 
 void restore_stack(int n)
@@ -118,16 +107,6 @@ void env_push(value_t v)
     }
     g_env_stack[g_env_sp] = v;
     g_env_sp++;
-}
-
-value_t env_top()
-{
-    return g_env_stack[g_env_sp - 1];
-}
-
-value_t env_pop()
-{
-    return g_env_stack[--g_env_sp];
 }
 
 void env_restore_stack(int n)
@@ -249,3 +228,29 @@ static void* halloc(size_t s)
     g_curheap += s;
     return (void*)h;
 }
+
+
+// 未被使用的函数
+#if 0
+
+value_t top()
+{
+    return g_stack[g_sp - 1];
+}
+
+value_t popn(int n)
+{
+    g_sp -= n;
+    return g_stack[g_sp];
+}
+
+value_t env_top()
+{
+    return g_env_stack[g_env_sp - 1];
+}
+
+value_t env_pop()
+{
+    return g_env_stack[--g_env_sp];
+}
+#endif
