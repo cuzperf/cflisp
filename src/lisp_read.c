@@ -173,7 +173,7 @@ start:
     case ')':
         getc(f);
         error("Unmatched closing parentesis");
-        break;
+        break;  // LCOV_EXCL_LINE
     default:
         read_sym(f, env);
         break;

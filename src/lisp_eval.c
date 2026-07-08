@@ -118,7 +118,7 @@ apply_top:
         }
         //cf_print(fun);
         error("Applying not a function");
-        break;
+        break;  // LCOV_EXCL_LINE
     default:
         res = sexp;
         break;
