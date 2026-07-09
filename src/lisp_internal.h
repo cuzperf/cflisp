@@ -143,7 +143,6 @@ void dump_env();
 value_t eval(value_t);
 
 // lisp_core.c
-void cf_lisp_init();
 type_t type_of(value_t v);
 
 extern value_t* g_stack;
