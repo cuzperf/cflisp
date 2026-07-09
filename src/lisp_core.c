@@ -13,7 +13,10 @@ const char* builtin_names[N_BUILTINS + 1] = {
 #undef XX
 };
 
-value_t FN, MACRO, NIL, T, QUOTE, REST, UNQUOTE, QUASIQUOTE, UNQUOTE_SPLICING;
+value_t FN, MACRO;
+value_t QUOTE, UNQUOTE, QUASIQUOTE, UNQUOTE_SPLICING;
+value_t REST;
+value_t NIL, T;
 
 int g_heap_size;
 memory_t g_heap, g_curheap;
@@ -41,9 +44,12 @@ CF_API void cf_lisp_init()
     g_stack = malloc(g_stack_size * sizeof(value_t));
     g_env_stack = malloc(g_env_stack_size * sizeof(value_t));
 
-    MACRO = symbol("macro", &symtab);
     FN = symbol("fn", &symtab);
+    MACRO = symbol("macro", &symtab);
     QUOTE = symbol("quote", &symtab);
+    QUASIQUOTE = symbol("quasiquote", &symtab);
+    UNQUOTE = symbol("unquote", &symtab);
+    UNQUOTE_SPLICING = symbol("unquote-splicing", &symtab);
 
     NIL = symbol("nil", &symtab);
     sym_val(NIL)->binding = NIL;
@@ -51,9 +57,6 @@ CF_API void cf_lisp_init()
     T = symbol("#t", &symtab);
     sym_val(T)->binding = T;
 
-    QUASIQUOTE = symbol("quasiquote", &symtab);
-    UNQUOTE = symbol("unquote", &symtab);
-    UNQUOTE_SPLICING = symbol("unquote-splicing", &symtab);
     REST = symbol("&", &symtab);
     sym_val(REST)->binding = REST;
 }

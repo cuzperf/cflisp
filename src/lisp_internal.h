@@ -164,7 +164,10 @@ typedef char* memory_t;
 extern memory_t g_heap, g_curheap;
 extern int g_heap_size;
 
-extern value_t FN, MACRO, NIL, T, QUOTE, REST, UNQUOTE, QUASIQUOTE, UNQUOTE_SPLICING;
+extern value_t FN, MACRO;
+extern value_t QUOTE, UNQUOTE, QUASIQUOTE, UNQUOTE_SPLICING;
+extern value_t REST;
+extern value_t NIL, T;
 
 extern const char* builtin_names[N_BUILTINS + 1];
 
