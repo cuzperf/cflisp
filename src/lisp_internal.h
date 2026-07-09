@@ -75,7 +75,7 @@ typedef struct _Symbol {
     char name[1];
 } Symbol;
 
-#define CL_BUILTIN_FUNCTIONS(XX)    \
+#define CF_BUILTIN_FUNCTIONS(XX)    \
     XX(B_FN,        "fn")           \
     XX(B_MACRO,     "macro")        \
     XX(B_QUOTE,     "quote")        \
@@ -106,7 +106,7 @@ typedef struct _Symbol {
 
 typedef enum {
 #define XX(symbol, name) symbol,
-    CL_BUILTIN_FUNCTIONS(XX)
+    CF_BUILTIN_FUNCTIONS(XX)
 #undef XX
 } BuiltinCode;
 
