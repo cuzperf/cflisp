@@ -209,7 +209,7 @@ apply_builtin:
     break;
     case F_NOT:
         assert_nargs(1);
-        if (pop() == NIL) {
+        if (to_bool(pop()) == NIL) {
             res = T;
         } else {
             res = NIL;

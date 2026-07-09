@@ -201,6 +201,16 @@ TEST_F(LispTest, testNot_2)
     value_t res = cl_eval_string("(not (> 1 2))");
     EXPECT_FALSE(cf_isNIL(res));
 }
+TEST_F(LispTest, testNot_3)
+{
+    value_t res = cl_eval_string("(not `#t)");
+    EXPECT_TRUE(cf_isNIL(res));
+}
+TEST_F(LispTest, testNot_4)
+{
+    value_t res = cl_eval_string("(not `())");
+    EXPECT_FALSE(cf_isNIL(res));
+}
 
 TEST_F(LispTest, testAnd_1)
 {
