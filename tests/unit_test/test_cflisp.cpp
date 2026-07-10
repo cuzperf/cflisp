@@ -247,31 +247,31 @@ TEST_F(LispTest, testOR_3)
 #define PRINT_ALL(x)                        \
     do {                                    \
         value_t res = cl_eval_string(x);    \
-        cf_print(res);                      \
-        cf_mprint(res);                    \
+        cf_println(res);                    \
+        cf_mprint(res);                     \
     } while (0)
 
 TEST_F(LispTest, testPrint)
 {
     PRINT_ALL("");
-    PRINT_ALL("(print `()");
-    PRINT_ALL("(print '(1 '(1 2) 2))");
-    PRINT_ALL("(print '(1 `(1 2) 2))");
-    PRINT_ALL("(print '(1 ,(+ 1 2) 2))");
-    PRINT_ALL("(print '(1 ,@(+ 1 2) 2))");
-    PRINT_ALL("print `(1 2 3 4)");
+    PRINT_ALL("`()");
+    PRINT_ALL("'(1 '(1 2) 2)");
+    PRINT_ALL("'(1 `(1 2) 2)");
+    PRINT_ALL("'(1 ,(+ 1 2) 2)");
+    PRINT_ALL("'(1 ,@(+ 1 2) 2)");
+    PRINT_ALL("`(1 2 3 4)");
 
     PRINT_ALL("def");
     PRINT_ALL("print");
     PRINT_ALL("(fn (x) (+ x 1))");
 
     // NOTE: list 内部函数有注释的情况 [陈智鹏@2026-7-5]
-    PRINT_ALL("(print `(1 2 ;3 \n4)");
+    PRINT_ALL("`(1 2 ;3 \n4)");
 }
 TEST_F(LispTest, testPrintUnbound)
 {
     value_t unbound = cf_read_file("");
-    cf_print(unbound);
+    cf_println(unbound);
     cf_mprint(unbound);
 }
 

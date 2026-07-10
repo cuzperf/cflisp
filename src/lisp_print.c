@@ -100,11 +100,11 @@ static void mprint_(value_t v, int depth)
     type_t t = tag(v);
     switch (t) {
     case TAG_NUM:
-        printf("[ NUM 0x%p] ", (void*)v);
+        printf("[ NUM %p] ", (void*)v);
         cf_println(v);
         break;
     case TAG_LIST:
-        printf("[LIST 0x%p] ", (void*)v);
+        printf("[LIST %p] ", (void*)v);
         cf_println(v);
         if (v != EMPTY_LIST && v != RELOCATED_MARK) {
             indent(depth + 2);
@@ -121,7 +121,7 @@ static void mprint_(value_t v, int depth)
             printf("unbound\n");
         } else {
             Symbol* s = sym_val(v);
-            printf("[ SYM 0x%p] name=\"%s\"  hash=%u  binding=0x%p\n",
+            printf("[ SYM %p] name=\"%s\"  hash=%u  binding=%p\n",
                 (void*)v, s->name, s->hash, (void*)s->binding);
             indent(depth + 2);
             printf("left=%p  right=%p\n", (void*)s->left, (void*)s->right);
@@ -134,14 +134,14 @@ static void mprint_(value_t v, int depth)
         Type* tp = (Type*)p;
         if (tp->type == TYPE_BUILTIN) {
             Builtin* b = (Builtin*)p;
-            printf("[BUILTIN 0x%p] code=%s\n", (void*)v, builtin_names[b->code]);
+            printf("[BUILTIN %p] code=%s\n", (void*)v, builtin_names[b->code]);
         } else {
-            printf("[OTHER 0x%p] type=%zu\n", (void*)v, (size_t)tp->type);
+            printf("[OTHER %p] type=%zu\n", (void*)v, (size_t)tp->type);
         }
         break;
     }
     default:
-        printf("[UNKNOWN 0x%p] tag=%zu\n", (void*)v, (size_t)t);
+        printf("[UNKNOWN %p] tag=%zu\n", (void*)v, (size_t)t);
         break;
     }
 }
