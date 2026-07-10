@@ -78,8 +78,8 @@ CF_API void cf_print(value_t v)
         printf("#<builtin %s >", builtin_names[builtin_val(v)->code]);
         break;
     default:
-        printf("default");
-        break;
+        printf("default");  // LCOV_EXCL_LINE
+        break;              // LCOV_EXCL_LINE
     }
 }
 
@@ -136,13 +136,13 @@ static void mprint_(value_t v, int depth)
             Builtin* b = (Builtin*)p;
             printf("[BUILTIN %p] code=%s\n", (void*)v, builtin_names[b->code]);
         } else {
-            printf("[OTHER %p] type=%zu\n", (void*)v, (size_t)tp->type);
+            printf("[OTHER %p] type=%zu\n", (void*)v, (size_t)tp->type);    // LCOV_EXCL_LINE
         }
         break;
     }
     default:
-        printf("[UNKNOWN %p] tag=%zu\n", (void*)v, (size_t)t);
-        break;
+        printf("[UNKNOWN %p] tag=%zu\n", (void*)v, (size_t)t);  // LCOV_EXCL_LINE
+        break;                                                  // LCOV_EXCL_LINE
     }
 }
 

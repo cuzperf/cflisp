@@ -1,5 +1,7 @@
 #include "lisp.h"
 
+// LCOV_EXCL_START
+
 int main(int argc, char* argv[])
 {
     cf_lisp_init();
@@ -17,3 +19,5 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
+
+// LCOV_EXCL_STOP

@@ -1,5 +1,7 @@
 #include "lisp_internal.h"
 
+// LCOV_EXCL_START
+
 void dump_symtab(Symbol* s)
 {
     printf("%s :", s->name);
@@ -47,3 +49,5 @@ void dump_env()
     }
     printf("\n");
 }
+
+// LCOV_EXCL_STOP

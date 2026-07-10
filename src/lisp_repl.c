@@ -2,6 +2,8 @@
 
 #include <setjmp.h>
 
+// LCOV_EXCL_START
+
 // for error handling in REPL
 static jmp_buf jmp_mark;
 static bool in_repl = false;
@@ -36,3 +38,5 @@ CF_API void cf_lisp_repl()
         }
     }
 }
+
+// LCOV_EXCL_STOP
