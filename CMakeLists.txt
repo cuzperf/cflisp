@@ -77,6 +77,9 @@ if (MSVC)
   endif()
 endif()
 
+include(${CMAKE_SOURCE_DIR}/cmake/stack_size.cmake)
+set_stack_size(cflisp ${STACK_SIZE_16M})
+
 # coverage
 include(${CMAKE_SOURCE_DIR}/cmake/coverage.cmake)
 
