@@ -21,10 +21,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up cflisp and CMake, gcc12, lcov
+    - name: Set up cflisp and CMake, lcov
       run: |
         sudo apt update
-        sudo apt install -y cmake gcc g++ lcov
+        sudo apt install -y cmake lcov
       shell: bash
 
     - name: Build project with CMake and Test with coverage
