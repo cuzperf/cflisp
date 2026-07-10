@@ -2,7 +2,7 @@ project(test)
 
 enable_testing()
 
-include_directories("${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include")
+include_directories("${GTEST_DIR}/googletest/include")
 include_directories("${CMAKE_SOURCE_DIR}")
 include_directories("${CMAKE_SOURCE_DIR}/src")
 include_directories("${CMAKE_SOURCE_DIR}/tests")
@@ -20,7 +20,7 @@ add_library(test_utils
 
 # unit_test
 add_executable(unit_test
-  ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/src/gtest_main.cc
+  ${GTEST_DIR}/googletest/src/gtest_main.cc
 
   unit_test/test_cflisp.cpp
 )

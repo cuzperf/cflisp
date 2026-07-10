@@ -23,7 +23,6 @@ jobs:
 
     - name: Set up cflisp and CMake, gcc12, lcov
       run: |
-        git submodule update --init --recursive
         sudo apt update
         sudo apt install -y cmake gcc g++ lcov
       shell: bash
@@ -51,7 +50,6 @@ jobs:
 
     - name: Set up cflisp and CMake
       run: |
-        git submodule update --init --recursive
         brew update
         brew install cmake
       shell: bash
@@ -73,7 +71,6 @@ jobs:
 
     - name: Set up cflisp and CMake
       run: |
-        git submodule update --init --recursive
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
       shell: powershell
 

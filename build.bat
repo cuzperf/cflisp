@@ -7,7 +7,6 @@ if not exist "%FILE%" (
   > "%FILE%" echo ; ingored by git, edit for debug
 )
 
-git submodule update --init --recursive
 cmake -B build -G "Visual Studio 17 2022" -DExampleID=test.lsp
 cmake --build build --config Debug --parallel 4
 build\Debug\unit_test
