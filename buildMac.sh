@@ -1,6 +1,5 @@
 rm -rf build
 
-git submodule update --init --recursive
 cmake -B build -G "Xcode" -DCMAKE_BUILD_TYPE=Debug
 cmake --build build  --parallel 4
 build/unit_test
