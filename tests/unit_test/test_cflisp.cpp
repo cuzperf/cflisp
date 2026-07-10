@@ -316,7 +316,15 @@ TEST_F(LispTest, testUnquoteSplicing)
     EXPECT_FALSE(cf_isNIL(res));
 }
 
-TEST_F(LispTest, testGc)
+
+TEST_F(LispTest, testExample)
+{
+    value_t sexp = cf_read_file("examples/example.lsp");
+    value_t res = cf_eval_toplevel(sexp);
+    EXPECT_TRUE(cf_isNIL(res));
+}
+
+static void testGc()
 {
     const char* pChar =
         "(defun bigList (n)\n"
@@ -332,14 +340,12 @@ TEST_F(LispTest, testGc)
     value_t res = cl_eval_string(pChar);
     cf_println(res);
     EXPECT_FALSE(cf_isNIL(res));
+    exit(0);
 }
-
-
-TEST_F(LispTest, testExample)
+TEST_F(LispTest, HandleExit_0)
 {
-    value_t sexp = cf_read_file("examples/example.lsp");
-    value_t res = cf_eval_toplevel(sexp);
-    EXPECT_TRUE(cf_isNIL(res));
+    // 单独运行避免对其它测例带来影响
+    EXPECT_EXIT(testGc(), ::testing::ExitedWithCode(0), "");
 }
 
 #define MAX_NAME 256
