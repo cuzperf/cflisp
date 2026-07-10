@@ -316,6 +316,24 @@ TEST_F(LispTest, testUnquoteSplicing)
     EXPECT_FALSE(cf_isNIL(res));
 }
 
+TEST_F(LispTest, testGc)
+{
+    const char* pChar =
+        "(defun bigList (n)\n"
+          "(if (= n 0) '()\n"
+            "(cons n (bigList(- n 1)))))\n"
+        "(def l (bigList 6000))\n"
+        "(head l)\n"
+        "(defun doubleGc (n)\n"
+          "(if (= n 0) '()\n"
+            "(let ((inner (bigList 4000)))\n"
+              "(cons inner (doubleGc (- n 1))))))\n"
+        "(doubleGc 5)";
+    value_t res = cl_eval_string(pChar);
+    cf_println(res);
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
 
 TEST_F(LispTest, testExample)
 {
