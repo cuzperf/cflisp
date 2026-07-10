@@ -324,9 +324,33 @@ TEST_F(LispTest, testExample)
     EXPECT_TRUE(cf_isNIL(res));
 }
 
-static void testGc()
+static void testGc1()
 {
     const char* pChar =
+        "(defun bigList (n)"
+        "  (if (= n 0) '()"
+        "    (cons n (bigList(- n 1)))))\n"
+        "(def l (bigList 6000))\n"
+        "(head l)\n"
+        "(defun doubleGc (n)"
+        "  (if (= n 0) '()"
+        "    (let ((inner (bigList 4000)))"
+        "      (cons inner (doubleGc (- n 1))))))\n"
+        "(doubleGc 5)";
+    value_t res = cl_eval_string(pChar);
+    cf_println(res);
+    EXPECT_FALSE(cf_isNIL(res));
+    exit(0);
+}
+TEST_F(LispTest, HandleGC_Exit_1)
+{
+    // 单独运行避免对其它测例带来影响
+    EXPECT_EXIT(testGc1(), ::testing::ExitedWithCode(0), "");
+}
+
+static void testGc2()
+{
+    const char* pChar1 =
         "(defun bigList (n)\n"
           "(if (= n 0) '()\n"
             "(cons n (bigList(- n 1)))))\n"
@@ -336,16 +360,34 @@ static void testGc()
           "(if (= n 0) '()\n"
             "(let ((inner (bigList 4000)))\n"
               "(cons inner (doubleGc (- n 1))))))\n"
-        "(doubleGc 5)";
-    value_t res = cl_eval_string(pChar);
-    cf_println(res);
-    EXPECT_FALSE(cf_isNIL(res));
+        "(doubleGc 5)\n"
+        "(defun range (n)\n"
+          "(if (= n 0) '() (cons n (range (- n 1)))))\n"
+        "(= (head (range 2000)) 2000)";
+    value_t res1 = cl_eval_string(pChar1);
+    cf_println(res1);
+    EXPECT_FALSE(cf_isNIL(res1));
+
+    const char* pChar2 =
+        "(defun assert (expected actual)"
+        "  (if (= expected actual) 'pass"
+        "    (do (print 'FAIL) (print '-expected) (print expected)"
+        "        (print '-actual) (print actual) 'fail)))\n"
+        "(defun check (label val expected)"
+        "  (print label) (assert expected val))\n"
+        "(defun range (n)"
+        "  (if (= n 0) '() (cons n (range (- n 1)))))\n"
+        "(check 'gc (head (range 2000)) 2000)";
+    value_t res2 = cl_eval_string(pChar2);
+    cf_println(res2);
+    EXPECT_FALSE(cf_isNIL(res2));
+
     exit(0);
 }
-TEST_F(LispTest, HandleExit_0)
+TEST_F(LispTest, HandleGC_Exit_2)
 {
     // 单独运行避免对其它测例带来影响
-    EXPECT_EXIT(testGc(), ::testing::ExitedWithCode(0), "");
+    EXPECT_EXIT(testGc2(), ::testing::ExitedWithCode(0), "");
 }
 
 #define MAX_NAME 256
