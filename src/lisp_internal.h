@@ -124,6 +124,7 @@ extern Symbol* symtab;
 value_t cons_(value_t h, value_t t);
 value_t cons(value_t h, value_t t);
 value_t symbol(const char* name, Symbol** env);
+void dump_symtab(Symbol* s);
 
 // lisp_list.c
 void push_list(value_t l);
@@ -133,17 +134,14 @@ value_t make_list(value_t h, ...);
 // lisp_read.c
 void read(FILE* f, Symbol** env);
 
-// lisp_dump.c
-void dump_symtab(Symbol* s);
-void dump_heap();
-void dump_stack();
-void dump_env();
-
 // lisp_eval.c
 value_t eval(value_t);
 
 // lisp_core.c
 type_t type_of(value_t v);
+void dump_heap();
+void dump_stack();
+void dump_env();
 
 extern value_t* g_stack;
 extern int g_sp;
@@ -159,10 +157,6 @@ void env_push(value_t v);
 value_t env_top();
 value_t env_pop();
 void env_restore_stack(int n);
-
-typedef char* memory_t;
-extern memory_t g_heap, g_curheap;
-extern int g_heap_size;
 
 extern value_t FN, MACRO;
 extern value_t QUOTE, UNQUOTE, QUASIQUOTE, UNQUOTE_SPLICING;

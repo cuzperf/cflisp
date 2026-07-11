@@ -397,7 +397,7 @@ apply:
                     tail_macro += 2;
                 } else {
                     if (tail_macro) {
-                        tail_macro++;
+                        ++tail_macro;
                     }
                 }
                 tail_eval(pop());

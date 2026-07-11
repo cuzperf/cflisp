@@ -57,7 +57,7 @@ static void read_sym(FILE* f, Symbol** env)
         c = (char)getc(f);
         buf[i] = c;
         c = fpeekc(f);
-        i++;
+        ++i;
         if (i > MAX_NAME) {
             error("name too long");
         }
@@ -204,12 +204,10 @@ CF_API value_t cf_read_file(const char* name)
     fclose(f);
 
     // NOTE: 从 ss 到 g_sp 的元素都是堆上的元素，故而下面操作是安全的 [陈智鹏@2026-6-26]
-    int ss1 = ss + 1;
     value_t cur = g_stack[ss];
-    while (ss1 < g_sp) {
+    for (int ss1 = ss + 1; ss1 < g_sp; ++ss1) {
         tail(cur) = g_stack[ss1];
         cur = g_stack[ss1];
-        ss1++;
     }
     restore_stack(ss + 1);
     return pop();
