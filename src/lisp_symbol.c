@@ -122,3 +122,22 @@ value_t symbol(const char* name, Symbol** env)
 {
     return tagptr(_symbol(name, env), TAG_SYM);
 }
+
+// LCOV_EXCL_START
+
+void dump_symtab(Symbol* s)
+{
+    printf("%s :", s->name);
+    cf_print(s->binding);
+    NL;
+    if (s->left) {
+        printf(" ");
+        dump_symtab(s->left);
+    }
+    if (s->right) {
+        printf(" ");
+        dump_symtab(s->right);
+    }
+}
+
+// LCOV_EXCL_STOP
