@@ -41,11 +41,15 @@ static void print_list(value_t v)
 
     printf("(");
 
+    cf_assert(head(v) != RELOCATED_MARK, "RELOCATED_MARK is an internal status in when doing gc");
+
+    // LCOV_EXCL_START
     if (head(v) == RELOCATED_MARK) {
         printf("Relocated");
         cf_print(tail(v));
         return;
     }
+    // LCOV_EXCL_STOP
 
     while (1) {
         cf_print(head(v));
