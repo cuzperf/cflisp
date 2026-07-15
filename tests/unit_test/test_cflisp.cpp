@@ -322,6 +322,24 @@ TEST_F(LispTest, testNoTailEval)
     EXPECT_FALSE(cf_isNIL(res));
 }
 
+TEST_F(LispTest, testGc)
+{
+    const char* pChar =
+        "(defun bigList (n)"
+        "  (if (= n 0) '()"
+        "  (cons n (bigList(- n 1)))))\n"
+        "(def l (bigList 6000))\n"
+        "(head l)\n"
+        "(defun doubleGc (n)"
+        "  (if (= n 0) '()"
+        "    (let ((inner (bigList 4000)))"
+        "      (cons inner (doubleGc (- n 1))))))\n"
+        "(doubleGc 5)";
+    value_t res = cf_eval_string(pChar);
+    cf_println(res);
+    EXPECT_FALSE(cf_isNIL(res));
+}
+
 TEST_F(LispTest, testExample)
 {
     value_t sexp = cf_read_file("examples/example.lsp");
