@@ -35,6 +35,9 @@ add_library(cflisplib SHARED
   src/lisp_repl.c
   src/lisp_symbol.c
 )
+target_compile_options(cflisplib PRIVATE
+    $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-g3>
+)
 target_compile_definitions(cflisplib PRIVATE BUILDING_CF_LIB)
 
 # VS 特有配置
