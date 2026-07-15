@@ -17,14 +17,14 @@ include(${CMAKE_SOURCE_DIR}/cmake/coverage.cmake) # 覆盖度配置
 include(${CMAKE_SOURCE_DIR}/cmake/cflisplib.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/cflisp.cmake)
 
+# add test
+include(${CMAKE_SOURCE_DIR}/cmake/gtest.cmake)
+add_subdirectory(${CMAKE_SOURCE_DIR}/tests)
+
 # 设置启动项(VS 特有配置)
 if (MSVC)
 set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT cflisp)
 endif()
-
-# add test
-include(${CMAKE_SOURCE_DIR}/cmake/gtest.cmake)
-add_subdirectory(${CMAKE_SOURCE_DIR}/tests)
 
 # 剩余工程为 CMAKE 预定义工程
 set(CMAKE_FOLDER "CMakePredefinedTargets")
