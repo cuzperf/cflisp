@@ -316,6 +316,11 @@ TEST_F(LispTest, testUnquoteSplicing)
     EXPECT_FALSE(cf_isNIL(res));
 }
 
+TEST_F(LispTest, testNoTailEval)
+{
+    value_t res = cl_eval_string("((fn (x) (+ x 1) (* x 2)) 5)");
+    EXPECT_FALSE(cf_isNIL(res));
+}
 
 TEST_F(LispTest, testExample)
 {
