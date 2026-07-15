@@ -22,6 +22,7 @@ add_library(test_utils
 add_executable(unit_test
   ${GTEST_DIR}/googletest/src/gtest_main.cc
 
+  unit_test/test_cflisp_no_system.cpp
   unit_test/test_cflisp.cpp
 )
 set_target_properties(unit_test PROPERTIES
