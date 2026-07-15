@@ -24,3 +24,12 @@ TEST_F(LispTestNoSystem, HandleExit_1)
 {
     EXPECT_EXIT(noEnoughArgs(), ::testing::ExitedWithCode(1), "");
 }
+
+static void evalEmptyList()
+{
+    cf_eval_string("()");
+}
+TEST_F(LispTestNoSystem, HandleExit_2)
+{
+    EXPECT_EXIT(evalEmptyList(), ::testing::ExitedWithCode(1), "");
+}
