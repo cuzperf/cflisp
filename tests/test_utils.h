@@ -29,7 +29,7 @@ int delete_file(const char* filename);
  * @param lispstr lisp 语法的字符串
  * @return 语句结果
  */
-value_t cl_eval_string(const char* lispstr);
+value_t cf_eval_string(const char* lispstr);
 
 #ifdef __cplusplus
 }

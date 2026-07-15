@@ -5,7 +5,7 @@
 #include <time.h>
 
 // NOTE: 属于曲线完成 lisp 对字符串的处理了 [陈智鹏@2026-7-3]
-value_t cl_eval_string(const char* lispstr)
+value_t cf_eval_string(const char* lispstr)
 {
     srand((unsigned)time(NULL));
     char filename[32];

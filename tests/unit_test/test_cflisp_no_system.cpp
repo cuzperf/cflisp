@@ -12,13 +12,13 @@ class LispTestNoSystem : public ::testing::Test {
 
 TEST_F(LispTestNoSystem, test1)
 {
-    value_t res = cl_eval_string("((fn () (+ 1 2)))");
+    value_t res = cf_eval_string("((fn () (+ 1 2)))");
     EXPECT_EQ(cf_num_val(res), 3);
 }
 
 static void noEnoughArgs()
 {
-    cl_eval_string("((fn (x y) (+ x y)) 1)");
+    cf_eval_string("((fn (x y) (+ x y)) 1)");
 }
 TEST_F(LispTestNoSystem, HandleExit_1)
 {
