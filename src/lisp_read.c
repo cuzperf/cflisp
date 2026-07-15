@@ -19,7 +19,6 @@ static inline bool is_space(char c)
 static inline char fpeekc(FILE* f)
 {
     char c = (char)getc(f);
-    /* printf("%c\n", c); */
     ungetc(c, f);   // 把上次取出来的再退回去（之前都没用过！）
     return c;
 }
@@ -114,8 +113,6 @@ static void read_list(FILE* f, Symbol** env)
         read(f, env);
     }
     push(pop_list(ss));
-    /* skip_spaces(f); */
-    /* printf("%c\n", fpeekc(f)); */
 }
 
 /**

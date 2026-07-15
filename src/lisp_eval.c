@@ -41,6 +41,7 @@ CF_API value_t cf_eval_toplevel(value_t l)
         return res;
     }
 
+    assert_type(l , LIST);
     push_reverse_list(l);
     while (g_sp != 0) {
         value_t v = pop();
@@ -51,16 +52,25 @@ CF_API value_t cf_eval_toplevel(value_t l)
 
 static value_t eval_sexp(value_t sexp, bool noeval);
 
+/**
+ * @note 宏展开参数自然就不要先求值了
+ */
 static value_t expand(value_t v)
 {
     return eval_sexp(v, true);
 }
 
+/**
+ * @note 正常求值是参数先求值，再带入
+ */
 value_t eval(value_t v)
 {
     return eval_sexp(v, false);
 }
 
+/**
+ * @brief 尾递归优化
+ */
 #define tail_eval(exp) do { sexp = (exp); restore_stack(ss); goto eval_top; } while(0);
 
 static void _assert_nargs(int _nargs, int n)
@@ -74,49 +84,43 @@ static value_t copy_body(value_t body);
 static void prepare_env(value_t args, int ss);
 static value_t eval_sym(value_t v);
 
-/**
- * @brief 本文件中最核心的函数
- */
+ /**
+  * @brief 本文件中最核心的表达式求值函数
+  * @param noeval 表示参数是否不要先求值
+  */
 static value_t eval_sexp(value_t sexp, bool noeval)
 {
-    //printf("\neval_sexp:\n");
-    //cf_print(sexp);
     value_t fun, funtype, args, body;
     BuiltinCode code;
     int nargs, sum;
     int ss = g_sp, ee = g_env_sp;
 
-    int tail_macro = 1;
+    int tail_macro = 1; // 宏展开深度计数器 - 每一轮减 1，避免宏无限展开
 
     value_t res = NIL;
-    bool is_apply = false;
+    bool is_apply = false;  // 是否在 apply 流程中 - 控制 apply_top 而非 eval_top 进入
 eval_top:
     if (tail_macro > 0) {
         --tail_macro;
     }
-    /* printf("Env:");  dump_env(); */
-    /* cf_print(sexp); NL; */
     switch (type_of(sexp)) {
     case TYPE_SYM:
         res = eval_sym(sexp);
         break;
 
     case TYPE_LIST:
-        push(tail(sexp));       //args
-        fun = eval(head(sexp));
+        push(tail(sexp));       // 实参压栈（实参永远是一个列表）
+        fun = eval(head(sexp)); // 获取函数
 apply_top:
-        //cf_println(fun);
-        //cf_println(top());
         if (type_of(fun) == TYPE_BUILTIN) {
             goto apply_builtin;
         }
-
+        // NOTE: 不是内置函数就是 lambda 函数或宏 [陈智鹏@2026-7-11]
         if (type_of(fun) == TYPE_LIST) {
             args = (head(tail(fun)));   // 形参
             body = tail(tail(fun));     // 函数体
             goto apply;
         }
-        //cf_print(fun);
         error("Applying not a function");
         break;  // LCOV_EXCL_LINE
     default:
@@ -127,8 +131,9 @@ apply_top:
 
 apply_builtin:
     code = builtin_val(fun)->code;
-    args = pop();
+    args = pop(); // 实参在前面已经压栈，这里出栈即可获取实参
     if (code >= F_ADD) {
+        // 后面的都是普通函数，需要先对入参求值（apply_top 除外）
         push_reverse_list(args);
         if (!is_apply) {
             for (int i = g_sp - 1; i >= ss; --i) {
@@ -137,8 +142,10 @@ apply_builtin:
         }
         is_apply = false;
     }
+    // NOTE: 入参被 push_reverse_list 后，栈涨了多少表示参数有多少 [陈智鹏@2026-7-11]
     nargs = g_sp - ss;
 
+    // NOTE: 下面处理过程中入参被消耗（被 pop 出栈） [陈智鹏@2026-7-11]
     switch (code) {
     case F_ADD:
         cf_assert(nargs > 0, "Too few arguments");
@@ -152,7 +159,7 @@ apply_builtin:
         cf_assert(nargs > 0, "Too few arguments");
         sum = num_val(pop());
         if (nargs == 1) {
-            sum = -sum;
+            sum = -sum; // 这里是负数特殊处理方式！
         }
         while (g_sp > ss) {
             sum -= num_val(pop());
@@ -253,24 +260,21 @@ apply_builtin:
             value_t cond = head(pair);
             push(head(tail_(pair)));
             res = eval(cond);
-            if (to_bool(res) != NIL) {
+            value_t cur = pop();
+            if (res != NIL) {
                 if (tail_macro > 0) {
                     ++tail_macro;
                 }
-                tail_eval(pop());
+                tail_eval(cur);
                 break;
             }
-            pop();
         }
         break;
     case B_DEF:
     {
         const char* name = sym_val(head(args))->name;
         value_t sym = symbol(name, &symtab);
-        //cf_println(tail_(args));
-        //cf_println(head(tail_(args)));
         res = eval(head(tail_(args)));
-        //cf_println(res);
         sym_val(sym)->binding = res;
     }
     break;
@@ -278,7 +282,7 @@ apply_builtin:
         push_reverse_list(args);
         while (g_sp > ss) {
             res = eval(pop());
-            if (res != NIL && res != EMPTY_LIST) {
+            if (to_bool(res) != NIL) {
                 break;
             }
         }
@@ -287,7 +291,7 @@ apply_builtin:
         push_reverse_list(args);
         while (g_sp > ss) {
             res = eval(pop());
-            if (res == NIL) {
+            if (to_bool(res) == NIL) {
                 break;
             }
         }
@@ -362,18 +366,14 @@ apply:
     {
         funtype = head(fun);
         cf_assert(funtype == FN || funtype == MACRO, "Applying not a function!!!!!");
-        value_t list = pop();   // 入参
-        //cf_println(list);
-        //cf_println(args);          // 形参
-        //cf_println(body);          // 函数体
+        value_t list = pop();   // 获取实参列表
         push(body);
         push(args);
 
         int ss0 = g_sp;
-        //cf_println(list);
-        push_list(list);
+        push_list(list);        // 可以确定实参个数了
         for (int i = ss0; i < g_sp; ++i) {
-            if (funtype != MACRO && !is_apply) {
+            if (funtype == FN && !is_apply) {
                 g_stack[i] = eval(g_stack[i]);
             }
         }
@@ -386,13 +386,11 @@ apply:
         args = pop();
         body = pop();
 
-        //cf_println(args);          // 形参
-        //cf_println(body);          // 函数体
-
         push_reverse_list(body);
 
         while (g_sp > ss) {
-            if (g_sp == ss + 1) {
+            value_t cur = pop();
+            if (g_sp == ss) {
                 if (funtype == MACRO) {
                     tail_macro += 2;
                 } else {
@@ -400,9 +398,9 @@ apply:
                         ++tail_macro;
                     }
                 }
-                tail_eval(pop());
+                tail_eval(cur);
             } else {
-                res = eval(pop());
+                res = eval(cur);
             }
         }
     }
@@ -413,25 +411,6 @@ end:
     restore_stack(ss);
     env_restore_stack(ee);
     return res;
-}
-
-/**
- * @brief 判断两个值是否一致（而非内存一致）
- */
-static value_t eqp(value_t v1, value_t v2)
-{
-    if (type_of(v1) != TYPE_LIST || type_of(v2) != TYPE_LIST) {
-        return v1 == v2 ? T : NIL;
-    }
-
-    while (v1 != EMPTY_LIST && v2 != EMPTY_LIST) {
-        if (eqp(head(v1), head(v2)) == NIL) {
-            return NIL;
-        }
-        v1 = tail(v1);
-        v2 = tail(v2);
-    }
-    return v1 == v2 ? T : NIL;
 }
 
 /**
@@ -488,7 +467,6 @@ static value_t copy_body(value_t body)
 
 static void prepare_env(value_t args, int ss)
 {
-    //cf_println(args);
     int sp = ss;
     if (is_list(args)) {
         for (value_t h = args; h != EMPTY_LIST; h = tail(h)) {
@@ -508,7 +486,8 @@ static void prepare_env(value_t args, int ss)
 
     // NOTE: 注意在前面的判断中, args 可能被改变 [陈智鹏@2026-6-29]
     if (!is_list(args)) {
-        env_push(pop_list(ss));
+        value_t list = pop_list(ss);
+        env_push(list);
         env_push(args);
     }
 
@@ -530,7 +509,6 @@ static value_t eval_sym(value_t v)
 
     for (int i = g_env_sp - 1; i >= 0; i -= 2) {
         if (g_env_stack[i] == v) {
-            //printf("Sym in g_env_stack:"); cf_print(v); cf_print(g_env_stack[i-1]); NL;
             return g_env_stack[i - 1];
         }
     }
@@ -539,6 +517,25 @@ static value_t eval_sym(value_t v)
     UNUSED(sym);
 
     return sym_val(v)->binding;
+}
+
+/**
+ * @brief 判断两个值是否一致（而非内存一致）
+ */
+static value_t eqp(value_t v1, value_t v2)
+{
+    if (type_of(v1) != TYPE_LIST || type_of(v2) != TYPE_LIST) {
+        return v1 == v2 ? T : NIL;
+    }
+
+    while (v1 != EMPTY_LIST && v2 != EMPTY_LIST) {
+        if (eqp(head(v1), head(v2)) == NIL) {
+            return NIL;
+        }
+        v1 = tail(v1);
+        v2 = tail(v2);
+    }
+    return v1 == v2 ? T : NIL;
 }
 
 // 未被使用

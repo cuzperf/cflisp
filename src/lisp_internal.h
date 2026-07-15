@@ -134,6 +134,10 @@ value_t make_list(value_t h, ...);
 // lisp_read.c
 void read(FILE* f, Symbol** env);
 
+// lisp_print.c
+CF_API void cf_(value_t v);
+CF_API void cf_m(value_t v);
+
 // lisp_eval.c
 value_t eval(value_t);
 
