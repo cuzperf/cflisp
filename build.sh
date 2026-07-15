@@ -5,4 +5,4 @@ cmake --build build --parallel 4
 ulimit -s 16384
 build/unit_test
 cmake --build build --target coverage
-cp build/cflisp cflisp
+# cp build/cflisp cflisp
