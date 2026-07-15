@@ -447,3 +447,12 @@ TEST_F(LispTest, HandleExit_4)
 {
     EXPECT_EXIT(stackOverflow(), ::testing::ExitedWithCode(1), "");
 }
+
+static void envStackOverflow()
+{
+    cl_eval_string("(defun f (x) (f x) (f x))\n(f 0)");
+}
+TEST_F(LispTest, HandleExit_5)
+{
+    EXPECT_EXIT(envStackOverflow(), ::testing::ExitedWithCode(1), "");
+}

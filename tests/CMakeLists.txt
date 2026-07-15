@@ -30,7 +30,7 @@ set_target_properties(unit_test PROPERTIES
 target_link_libraries(unit_test test_utils gtest cflisplib)
 
 include(${CMAKE_SOURCE_DIR}/cmake/stack_size.cmake)
-set_stack_size(unit_test ${STACK_SIZE_16M})
+set_stack_size(unit_test ${STACK_SIZE_64M})
 
 # VS 特有配置
 if (MSVC)

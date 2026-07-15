@@ -24,4 +24,4 @@ macro(set_stack_size target stack_size_bytes)
   endif()
 endmacro()
 
-set(STACK_SIZE_16M 16777216)
+set(STACK_SIZE_64M 67108864)
