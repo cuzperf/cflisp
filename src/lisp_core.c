@@ -30,6 +30,9 @@ static int g_env_stack_size = ENV_SIZE;
 
 CF_API void cf_lisp_init()
 {
+    g_oldheap = NULL;
+    symtab = NULL;
+
     for (int i = 0; i < N_BUILTINS; ++i) {
         g_builtins[i].type = TYPE_BUILTIN;
         g_builtins[i].code = (BuiltinCode)i;
@@ -130,16 +133,24 @@ static value_t relocate(value_t);
 static void relocate_symtab(Symbol*);
 
 bool is_gc = 0;
+
+// LCOV_EXCL_START
+bool in_gc()
+{
+    return is_gc;
+}
+// LCOV_EXCL_STOP
+
 void gc()
 {
     if (is_gc) {
-        // NOTE: 如果 HEAP_RESIZE_RATIO 是 1.5 感觉这种可能性还是有的哦 [陈智鹏@2026-7-11]
-        error("Gc in gc!!!!");
+        // NOTE: 理论上只要 HEAP_RESIZE_RATIO 严格大于1 ，此处应该无法被覆盖 [陈智鹏@2026-7-15]
+        error("Gc in gc!!!!");  // LCOV_EXCL_LINE
     }
     is_gc = true;
 
     int oh = g_heap_size;
-    g_heap_size = (int)(g_heap_size * HEAP_RESIZE_RATIO);
+    g_heap_size = (int)(g_heap_size * HEAP_RESIZE_RATIO + sizeof(List));
     if (g_oldheap == NULL) {
         g_oldheap = malloc(g_heap_size);
     } else {
