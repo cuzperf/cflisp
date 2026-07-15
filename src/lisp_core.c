@@ -30,6 +30,9 @@ static int g_env_stack_size = ENV_SIZE;
 
 CF_API void cf_lisp_init()
 {
+    g_oldheap = NULL;
+    symtab = NULL;
+
     for (int i = 0; i < N_BUILTINS; ++i) {
         g_builtins[i].type = TYPE_BUILTIN;
         g_builtins[i].code = (BuiltinCode)i;
