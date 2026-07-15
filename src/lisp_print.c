@@ -77,7 +77,7 @@ CF_API void cf_print(value_t v)
     case TYPE_BUILTIN:
         printf("#<builtin %s >", builtin_names[builtin_val(v)->code]);
         break;
-    default:
+    default:                // LCOV_EXCL_LINE
         printf("default");  // LCOV_EXCL_LINE
         break;              // LCOV_EXCL_LINE
     }
@@ -140,7 +140,7 @@ static void mprint_(value_t v, int depth)
         }
         break;
     }
-    default:
+    default:                                                    // LCOV_EXCL_LINE
         printf("[UNKNOWN %p] tag=%zu\n", (void*)v, (size_t)t);  // LCOV_EXCL_LINE
         break;                                                  // LCOV_EXCL_LINE
     }

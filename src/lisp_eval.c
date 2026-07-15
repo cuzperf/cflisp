@@ -358,8 +358,8 @@ apply_builtin:
         assert_nargs(0);
         res = head(args);
         break;
-    default:
-        error("Unknown builtin %d", code);
+    default:                                // LCOV_EXCL_LINE
+        error("Unknown builtin %d", code);  // LCOV_EXCL_LINE
     }
     goto end;
 apply:
@@ -404,7 +404,7 @@ apply:
             }
         }
     }
-end:
+end:                                // LCOV_EXCL_LINE
     if (tail_macro && !noeval) {
         tail_eval(res);
     }
