@@ -153,3 +153,16 @@ CF_API void cf_mprint(value_t v)
 {
     mprint_(v, 0);
 }
+
+// LCOV_EXCL_START
+
+CF_API void cf_(value_t v)
+{
+    cf_println(v);
+}
+CF_API void cf_m(value_t v)
+{
+    cf_mprint(v);
+}
+
+// LCOV_EXCL_STOP
