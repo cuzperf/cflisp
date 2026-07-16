@@ -5,3 +5,5 @@ build/
 cflisp
 cflisp.exe
 examples/test.lsp
+**/__pycache__/
+site/
