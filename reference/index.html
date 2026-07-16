@@ -1971,8 +1971,8 @@
   
 
 
-<h1 id="cflisp">cflisp 内置功能参考手册<a class="headerlink" href="#cflisp" title="Permanent link">&para;</a></h1>
-<p>本手册为 cflisp 内部实现的文档（尽可能简短），主要包括</p>
+<h1 id="cflisp">cflisp 参考手册<a class="headerlink" href="#cflisp" title="Permanent link">&para;</a></h1>
+<p>本手册为 cflisp 内部实现的参考文档（尽可能简短），主要包括</p>
 <ol>
 <li>数据类型表示</li>
 <li>内置符号和语法糖</li>
@@ -1992,9 +1992,9 @@
 <p>列表内存布局：
 <div class="highlight"><pre><span></span><code>(a (b c) d)
   ↓
-[a|●]──→[●|●]──→[d|()]
-           ↓
-          [b|●]──→[c|()]
+[a|●]──&gt;[●|●]──&gt;[d|()]
+         ↓
+        [b|●]──&gt;[c|()]
 </code></pre></div></p>
 <h3 id="symbol-0x2">符号 (Symbol) 0x2<a class="headerlink" href="#symbol-0x2" title="Permanent link">&para;</a></h3>
 <p>用作变量名和字面量标识符。符号表以二叉搜索树（BST）组织，按 hash 值排序。</p>
@@ -2002,10 +2002,12 @@
 &#39;hello     → 符号 hello
 def        → 符号 def（内建关键字）
 </code></pre></div>
-<p>特殊符号：
-- <code>nil</code> — 假值，同时是空值
-- <code>#t</code> — 真值
-- <code>&amp;</code> — 可变参数标记（rest 参数）</p>
+<p>特殊符号：</p>
+<ul>
+<li><code>nil</code> — 假值，同时是空值</li>
+<li><code>#t</code> — 真值</li>
+<li><code>&amp;</code> — 可变参数标记（rest 参数）</li>
+</ul>
 <h3 id="builtin-0x3">内建函数 (Builtin) 0x3<a class="headerlink" href="#builtin-0x3" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>+           → #&lt;builtin + &gt;
 cons        → #&lt;builtin cons &gt;
@@ -2015,7 +2017,7 @@ cons        → #&lt;builtin cons &gt;
 <ul>
 <li><code>fn</code> — 创建函数（λ 表达式）</li>
 <li><code>macro</code> — 创建宏</li>
-<li><code>quote</code> / <code>'</code> — 阻止求值</li>
+<li><code>quote</code> — 阻止求值（<code>'</code> 为语法糖）</li>
 <li><code>def</code> — 定义/更新全局变量</li>
 <li><code>cond</code> — 条件分支</li>
 <li><code>do</code> — 顺序执行，返回最后一个值</li>
@@ -2147,7 +2149,7 @@ cons        → #&lt;builtin cons &gt;
 <span class="p">(</span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="nb">not</span><span class="w"> </span><span class="o">&#39;</span><span class="p">()))</span><span class="w">                  </span><span class="c1">; 输出: #t</span>
 </code></pre></div>
 <h3 id="cons"><code>cons</code> — 构造列表<a class="headerlink" href="#cons" title="Permanent link">&para;</a></h3>
-<p><code>(cons head tail)</code> 构造一个 <code>(head . tail)</code> 的序对。<code>tail</code> **必须**是一个列表。</p>
+<p><code>(cons head tail)</code> 构造一个 <code>(head . tail)</code> 的序对。<code>tail</code> 必须是一个列表。</p>
 <div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="nb">cons</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&#39;</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="mi">3</span><span class="p">)))</span><span class="w">   </span><span class="c1">; 输出: (1 2 3)</span>
 <span class="p">(</span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="nb">cons</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&#39;</span><span class="p">()))</span><span class="w">      </span><span class="c1">; 输出: (1)</span>
 </code></pre></div>
@@ -2159,7 +2161,7 @@ cons        → #&lt;builtin cons &gt;
 <h3 id="tail-cdr"><code>tail</code> — 取列表剩余部分（cdr）<a class="headerlink" href="#tail-cdr" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="nv">tail</span><span class="w"> </span><span class="o">&#39;</span><span class="p">(</span><span class="nv">a</span><span class="w"> </span><span class="nv">b</span><span class="w"> </span><span class="nv">c</span><span class="p">)))</span><span class="w">   </span><span class="c1">; 输出: (b c)</span>
 <span class="p">(</span><span class="nb">print</span><span class="w"> </span><span class="p">(</span><span class="nv">tail</span><span class="w"> </span><span class="o">&#39;</span><span class="p">(</span><span class="nv">a</span><span class="p">)))</span><span class="w">       </span><span class="c1">; 输出: ()</span>
-<span class="c1">; (tail &#39;())              ; 错误: Trying to take head/tail of empty list</span>
+<span class="p">(</span><span class="nv">tail</span><span class="w"> </span><span class="o">&#39;</span><span class="p">())</span><span class="w">                </span><span class="c1">; 错误: Trying to take head/tail of empty list</span>
 </code></pre></div>
 <h3 id="eval"><code>eval</code> — 显式求值（元编程函数）<a class="headerlink" href="#eval" title="Permanent link">&para;</a></h3>
 <p><code>(eval expr)</code> 对表达式进行求值。</p>
