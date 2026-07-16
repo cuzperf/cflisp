@@ -7,10 +7,10 @@
  // NOTE: 这里的 List 除了 EMPTY_LIST 外都是堆上的元素 [陈智鹏@2026-6-26]
  /*  (a (b c) d)
  *
- *  [a|●]--→[●|●]──→[d|EMPTY_LIST]
- *             |
- *             |
- *            [b|●]──→[c|EMPTY_LIST]
+ *  [a|●]-->[●|●]──>[d|EMPTY_LIST]
+ *           |
+ *           |
+ *          [b|●]──>[c|EMPTY_LIST]
  */
 
 /**

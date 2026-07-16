@@ -1,6 +1,6 @@
-# cflisp 内置功能参考手册
+# cflisp 参考手册
 
-本手册为 cflisp 内部实现的文档（尽可能简短），主要包括
+本手册为 cflisp 内部实现的参考文档（尽可能简短），主要包括
 
 1. 数据类型表示
 2. 内置符号和语法糖
@@ -28,9 +28,9 @@
 ```
 (a (b c) d)
   ↓
-[a|●]──→[●|●]──→[d|()]
-           ↓
-          [b|●]──→[c|()]
+[a|●]──>[●|●]──>[d|()]
+         ↓
+        [b|●]──>[c|()]
 ```
 
 ### 符号 (Symbol) 0x2
@@ -44,6 +44,7 @@ def        → 符号 def（内建关键字）
 ```
 
 特殊符号：
+
 - `nil` — 假值，同时是空值
 - `#t` — 真值
 - `&` — 可变参数标记（rest 参数）
@@ -61,7 +62,7 @@ cons        → #<builtin cons >
 
 - `fn` — 创建函数（λ 表达式）
 - `macro` — 创建宏
-- `quote` / `'` — 阻止求值
+- `quote` — 阻止求值（`'` 为语法糖）
 - `def` — 定义/更新全局变量
 - `cond` — 条件分支
 - `do` — 顺序执行，返回最后一个值
@@ -241,7 +242,7 @@ lisp 中四则运算可以接受多参数！
 
 ### `cons` — 构造列表
 
-`(cons head tail)` 构造一个 `(head . tail)` 的序对。`tail` **必须**是一个列表。
+`(cons head tail)` 构造一个 `(head . tail)` 的序对。`tail` 必须是一个列表。
 
 ```lisp
 (print (cons 1 '(2 3)))   ; 输出: (1 2 3)
@@ -261,7 +262,7 @@ lisp 中四则运算可以接受多参数！
 ```lisp
 (print (tail '(a b c)))   ; 输出: (b c)
 (print (tail '(a)))       ; 输出: ()
-; (tail '())              ; 错误: Trying to take head/tail of empty list
+(tail '())                ; 错误: Trying to take head/tail of empty list
 ```
 
 ### `eval` — 显式求值（元编程函数）
