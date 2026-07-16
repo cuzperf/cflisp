@@ -1,0 +1,2107 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="cuzperf">
+      
+      
+        <link rel="canonical" href="https://cuzperf.github.io/cflisp/implementation/">
+      
+      
+        <link rel="prev" href="../design/">
+      
+      
+        <link rel="next" href="../QA/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS 订阅" href="../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="已更新内容的 RSS 订阅" href="../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../img/cuzperf.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>实现文档 - cflisp docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cflisp" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="cflisp docs" class="md-header__button md-logo" aria-label="cflisp docs" data-md-component="logo">
+      
+  <img src="../img/favicon.ico" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            cflisp docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              实现文档
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="blue"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cuzperf/cflisp" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cuzperf/mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  主页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  参考手册
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dataFlow/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  处理流程图
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../design/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  设计文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  实现文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../QA/" class="md-tabs__link">
+          
+  
+  
+  杂项
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="cflisp docs" class="md-nav__button md-logo" aria-label="cflisp docs" data-md-component="logo">
+      
+  <img src="../img/favicon.ico" alt="logo">
+
+    </a>
+    cflisp docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cuzperf/cflisp" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cuzperf/mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    主页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dataFlow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    处理流程图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    设计文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实现文档
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实现文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实现路线图
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第1步：值表示
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第1步：值表示">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tagged-pointer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagged Pointer 实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        List 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symbol-bst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symbol 结构（BST 符号表）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#builtin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Builtin 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第2步：读取器（Reader）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第2步：读取器（Reader）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        字符流处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        列表读取
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多表达式文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3printer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第3步：打印器（Printer）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第3步：打印器（Printer）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        类型分派
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        列表打印
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4evaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第4步：求值器（Evaluator）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第4步：求值器（Evaluator）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        顶层求值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        eval 主循环
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参数求值 vs 不求值
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第5步：内建函数实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第5步：内建函数实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        典型实现：加法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        比较 = 递归列表相等
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第6步：环境与作用域
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第6步：环境与作用域">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        环境栈
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        深拷贝捕获（闭包）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第7步：尾递归优化
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第8步：垃圾回收
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第8步：垃圾回收">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cheney" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cheney 半区复制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relocate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        relocate 实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        根集
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第9步：REPL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第9步：REPL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心循环
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fail() 错误处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10systemlsp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第10步：标准库（system.lsp）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第10步：标准库（system.lsp）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实现策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splice-body" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键宏：splice-body
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        构建系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="构建系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cmake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CMake 配置要点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        测试技巧
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        快速实现检查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    杂项
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    杂项
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    问答
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../qusiquote/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    拟引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实现路线图
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第1步：值表示
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第1步：值表示">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tagged-pointer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagged Pointer 实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        List 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#symbol-bst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symbol 结构（BST 符号表）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#builtin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Builtin 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第2步：读取器（Reader）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第2步：读取器（Reader）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        字符流处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        列表读取
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多表达式文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3printer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第3步：打印器（Printer）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第3步：打印器（Printer）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        类型分派
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        列表打印
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4evaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第4步：求值器（Evaluator）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第4步：求值器（Evaluator）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        顶层求值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        eval 主循环
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        参数求值 vs 不求值
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第5步：内建函数实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第5步：内建函数实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        典型实现：加法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        比较 = 递归列表相等
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第6步：环境与作用域
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第6步：环境与作用域">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        环境栈
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        深拷贝捕获（闭包）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第7步：尾递归优化
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第8步：垃圾回收
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第8步：垃圾回收">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cheney" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cheney 半区复制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relocate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        relocate 实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        根集
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9repl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第9步：REPL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第9步：REPL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心循环
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fail() 错误处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10systemlsp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第10步：标准库（system.lsp）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="第10步：标准库（system.lsp）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实现策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splice-body" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键宏：splice-body
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        构建系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="构建系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cmake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CMake 配置要点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        测试技巧
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        快速实现检查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cflisp">cflisp 实现文档<a class="headerlink" href="#cflisp" title="Permanent link">&para;</a></h1>
+<p>本文档指导如何从头快速实现一个类似 cflisp 的 Lisp 解释器，按推荐实现顺序组织。</p>
+<h2 id="_1">实现路线图<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>第1步：值表示 + 基础数据结构  →  tagged pointer + List + Symbol
+第2步：读取器（Reader）       →  文本 → AST
+第3步：打印器（Printer）      →  AST → 文本
+第4步：求值器（Evaluator）    →  AST → 结果
+第5步：内建函数               →  算术、列表操作、类型判断
+第6步：特殊形式               →  quote/cond/def/fn/do/macro
+第7步：环境与闭包             →  词法作用域 + 深拷贝捕获
+第8步：尾递归优化             →  tail_eval 宏
+第9步：垃圾回收               →  Cheney 复制 GC
+第10步：REPL + 错误处理       →  交互循环 + setjmp/longjmp
+第11步：标准库（system.lsp）  →  宏 + 常用函数
+</code></pre></div>
+<h2 id="1">第1步：值表示<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="tagged-pointer">Tagged Pointer 实现<a class="headerlink" href="#tagged-pointer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">value_t</span><span class="p">;</span>
+
+<span class="cp">#define TAG_NUM   0x0</span>
+<span class="cp">#define TAG_LIST  0x1</span>
+<span class="cp">#define TAG_SYM   0x2</span>
+<span class="cp">#define TAG_OTHER 0x3</span>
+
+<span class="cp">#define tag(x)    ((x) &amp; 0x3)</span>
+<span class="cp">#define ptr(x)    ((void*)((x) &amp; ~(value_t)0x3))</span>
+<span class="cp">#define tagptr(x, t) (((value_t)(x)) | (t))</span>
+<span class="cp">#define number(x) (((value_t)(x)) &lt;&lt; 2)</span>
+
+<span class="cp">#define is_num(x)  (tag(x) == TAG_NUM)</span>
+<span class="cp">#define is_list(x) (tag(x) == TAG_LIST)</span>
+<span class="cp">#define is_sym(x)  (tag(x) == TAG_SYM)</span>
+</code></pre></div>
+<p>关键点：
+- 数值：<code>(int_value &lt;&lt; 2) | 0x0</code>，提取时算术右移 <code>(int)(x &gt;&gt; 2)</code>
+- 指针：低 2 位用 OR 标签，使用时 AND 清除取指</p>
+<h3 id="list">List 结构<a class="headerlink" href="#list" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">value_t</span><span class="w"> </span><span class="n">head</span><span class="p">;</span><span class="w"> </span><span class="n">value_t</span><span class="w"> </span><span class="n">tail</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">List</span><span class="p">;</span>
+</code></pre></div>
+<p>cons 单元中 <code>tail</code> 必须为 <code>TAG_LIST</code> 类型（空列表 <code>EMPTY_LIST = (value_t)TAG_LIST</code>，即 <code>(void*)0x1</code>）。</p>
+<h3 id="symbol-bst">Symbol 结构（BST 符号表）<a class="headerlink" href="#symbol-bst" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_Symbol</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">value_t</span><span class="w"> </span><span class="n">binding</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">hash</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">_Symbol</span><span class="o">*</span><span class="w"> </span><span class="n">left</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">_Symbol</span><span class="o">*</span><span class="w"> </span><span class="n">right</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w">       </span><span class="c1">// 柔性数组</span>
+<span class="p">}</span><span class="w"> </span><span class="n">Symbol</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li><code>binding</code> 存该符号绑定的值</li>
+<li><code>hash</code> 用简单字符串哈希（如累加字符后异或常量）</li>
+<li>BST 按 hash 值排序，插入/查找迭代实现</li>
+</ul>
+<h3 id="builtin">Builtin 结构<a class="headerlink" href="#builtin" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">type_t</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w"> </span><span class="n">BuiltinCode</span><span class="w"> </span><span class="n">code</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">Builtin</span><span class="p">;</span>
+</code></pre></div>
+<p><code>type</code> 恒为 <code>TYPE_BUILTIN(=3)</code>，<code>code</code> 枚举标识具体内建函数。</p>
+<h2 id="2reader">第2步：读取器（Reader）<a class="headerlink" href="#2reader" title="Permanent link">&para;</a></h2>
+<h3 id="_2">字符流处理<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(text) ─→ read() ─→ g_stack (value_t 栈)
+</code></pre></div>
+<p>核心逻辑：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="kt">FILE</span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">Symbol</span><span class="o">**</span><span class="w"> </span><span class="n">env</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fpeekc</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;(&#39;</span><span class="p">:</span><span class="w">  </span><span class="n">read_list</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">env</span><span class="p">);</span><span class="w">  </span><span class="k">break</span><span class="p">;</span><span class="w">       </span><span class="c1">// 列表</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;\&#39;&#39;</span><span class="p">:</span><span class="w"> </span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">env</span><span class="p">);</span><span class="w">                    </span><span class="c1">// 引号糖</span>
+<span class="w">                  </span><span class="n">push</span><span class="p">(</span><span class="n">make_list</span><span class="p">(</span><span class="n">QUOTE</span><span class="p">,</span><span class="w"> </span><span class="n">pop</span><span class="p">(),</span><span class="w"> </span><span class="n">END</span><span class="p">));</span>
+<span class="w">                  </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;`&#39;</span><span class="p">:</span><span class="w">  </span><span class="p">...</span><span class="w">  </span><span class="c1">// quasiquote 糖</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">:</span><span class="w">  </span><span class="p">...</span><span class="w">  </span><span class="c1">// unquote / unquote-splicing 糖</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;0&#39;</span><span class="p">..</span><span class="sc">&#39;9&#39;</span><span class="p">:</span><span class="w"> </span><span class="n">read_int</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">env</span><span class="p">);</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w">     </span><span class="c1">// 整数</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="sc">&#39;;&#39;</span><span class="p">:</span><span class="w">  </span><span class="n">skip_comments</span><span class="p">(</span><span class="n">f</span><span class="p">);</span><span class="w"> </span><span class="k">goto</span><span class="w"> </span><span class="n">start</span><span class="p">;</span><span class="w">    </span><span class="c1">// 注释</span>
+<span class="w">        </span><span class="k">default</span><span class="o">:</span><span class="w">   </span><span class="n">read_sym</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">env</span><span class="p">);</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w">         </span><span class="c1">// 符号</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>技巧：<code>fpeekc</code> 用 <code>getc + ungetc</code> 实现 peek，<code>skip_spaces</code> 跳过空白。</p>
+<blockquote>
+<p>核心：read 函数总会向值栈 push 一个元素，如果不保证会使得实现变得很复杂</p>
+</blockquote>
+<h3 id="_3">列表读取<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>read_list:
+  &#39;(&#39; → 递归 read 各元素 → 遇到 &#39;)&#39; 结束
+       → pop_list(ss) 将栈上元素打包成链表
+</code></pre></div>
+<h3 id="_4">多表达式文件<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p><code>cf_read_file</code> 反复调用 <code>read</code> 直至 EOF，每次结果用 <code>make_cell</code> 包裹后用 <code>tail</code> 串联成链表，最后 <code>cf_eval_toplevel</code> 依次求值。</p>
+<h2 id="3printer">第3步：打印器（Printer）<a class="headerlink" href="#3printer" title="Permanent link">&para;</a></h2>
+<h3 id="_5">类型分派<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">cf_print</span><span class="p">(</span><span class="n">value_t</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">type_of</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">TYPE_NUM</span><span class="p">:</span><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">num_val</span><span class="p">(</span><span class="n">v</span><span class="p">));</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">TYPE_LIST</span><span class="p">:</span><span class="w">   </span><span class="n">print_list</span><span class="p">(</span><span class="n">v</span><span class="p">);</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">TYPE_SYM</span><span class="p">:</span><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sym_val</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">TYPE_BUILTIN</span><span class="p">:</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;#&lt;builtin %s&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builtin_names</span><span class="p">[</span><span class="n">b</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">]);</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="_6">列表打印<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>递归打印 head，迭代遍历 tail，遇到 <code>QUOTE</code>/<code>QUASIQUOTE</code>/<code>UNQUOTE</code>/<code>UNQUOTE_SPLICING</code> 时输出对应糖语法前缀。</p>
+<h2 id="4evaluator">第4步：求值器（Evaluator）<a class="headerlink" href="#4evaluator" title="Permanent link">&para;</a></h2>
+<h3 id="_7">顶层求值<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">value_t</span><span class="w"> </span><span class="nf">cf_eval_toplevel</span><span class="p">(</span><span class="n">value_t</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">push_reverse_list</span><span class="p">(</span><span class="n">l</span><span class="p">);</span><span class="w">   </span><span class="c1">// 反序压栈</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">g_sp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">value_t</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pop</span><span class="p">();</span>
+<span class="w">        </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eval</span><span class="p">(</span><span class="n">v</span><span class="p">);</span><span class="w">      </span><span class="c1">// 依次求值</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w">             </span><span class="c1">// 返回最后一个</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="eval">eval 主循环<a class="headerlink" href="#eval" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nl">eval_top</span><span class="p">:</span>
+<span class="w">  </span><span class="n">type_of</span><span class="p">(</span><span class="n">sexp</span><span class="p">)</span>
+<span class="w">    </span><span class="err">├─</span><span class="w"> </span><span class="n">SYM</span><span class="w">  </span><span class="err">→</span><span class="w"> </span><span class="n">环境栈查找</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">符号表查找</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">返回</span><span class="w"> </span><span class="n">binding</span>
+<span class="w">    </span><span class="err">└─</span><span class="w"> </span><span class="n">LIST</span><span class="w"> </span><span class="err">→</span>
+<span class="w">        </span><span class="n">push</span><span class="p">(</span><span class="n">tail</span><span class="p">(</span><span class="n">sexp</span><span class="p">))</span><span class="w">        </span><span class="c1">// 存参数</span>
+<span class="w">        </span><span class="n">fun</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eval</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">sexp</span><span class="p">))</span><span class="w">  </span><span class="c1">// 求值函数位置</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">fun</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">BUILTIN</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">apply_builtin</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">fun</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">LIST</span><span class="w"> </span><span class="p">(</span><span class="n">fn</span><span class="o">/</span><span class="n">macro</span><span class="p">)</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">apply</span>
+</code></pre></div>
+<h3 id="vs">参数求值 vs 不求值<a class="headerlink" href="#vs" title="Permanent link">&para;</a></h3>
+<p>内建算术/比较类（<code>code &gt;= F_ADD</code>）在 <code>apply_builtin</code> 中自动求值参数；特殊形式（<code>B_COND/B_DEF/B_QUOTE</code>）自行控制求值时机，不做预求值。</p>
+<h2 id="5">第5步：内建函数实现<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<p>用 <code>CF_BUILTIN_FUNCTIONS</code> 宏批量定义枚举和名字：</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#define CF_BUILTIN_FUNCTIONS(XX) \</span>
+<span class="cp">    XX(B_FN,    &quot;fn&quot;)     \</span>
+<span class="cp">    XX(F_ADD,   &quot;+&quot;)      \</span>
+<span class="cp">    XX(F_CONS,  &quot;cons&quot;)   \</span>
+<span class="cp">    </span><span class="c1">// ...</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cp">#define XX(s, n) s,</span>
+<span class="w">    </span><span class="n">CF_BUILTIN_FUNCTIONS</span><span class="p">(</span><span class="n">XX</span><span class="p">)</span>
+<span class="w">    </span><span class="cp">#undef XX</span>
+<span class="p">}</span><span class="w"> </span><span class="n">BuiltinCode</span><span class="p">;</span>
+</code></pre></div>
+<p>初始化时创建全局 <code>Builtin</code> 数组，将每个内建函数名字注册到符号表，<code>binding</code> 指向对应 <code>Builtin</code> 结构。</p>
+<h3 id="_8">典型实现：加法<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">case</span><span class="w"> </span><span class="no">F_ADD</span><span class="p">:</span>
+<span class="w">    </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">num_val</span><span class="p">(</span><span class="n">pop</span><span class="p">());</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">g_sp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">ss</span><span class="p">)</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">num_val</span><span class="p">(</span><span class="n">pop</span><span class="p">());</span>
+<span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">number</span><span class="p">(</span><span class="n">sum</span><span class="p">);</span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="_9">比较 = 递归列表相等<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<p><code>eqp</code> 先判类型：非列表直接 <code>==</code> 比较；列表递归比较 <code>head</code> 和 <code>tail</code>。</p>
+<h2 id="6">第6步：环境与作用域<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<h3 id="_10">环境栈<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>g_env_stack: [value1, sym1, value2, sym2, ...]
+</code></pre></div>
+<ul>
+<li><code>fn</code>/<code>macro</code> 创建时：形参符号和当前值入栈配对</li>
+<li><code>eval_sym</code> 符号查找：从栈顶步长 2 向下遍历，找到即返回值</li>
+<li>未找到 → 到符号表取全局 <code>binding</code></li>
+</ul>
+<h3 id="_11">深拷贝捕获（闭包）<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="n">value_t</span><span class="w"> </span><span class="nf">copy_body</span><span class="p">(</span><span class="n">value_t</span><span class="w"> </span><span class="n">body</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">TYPE_LIST</span><span class="p">:</span><span class="w">  </span><span class="n">递归复制每个元素</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">TYPE_SYM</span><span class="p">:</span><span class="w">   </span><span class="n">在环境栈中查找替换为实际值</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w">         </span><span class="n">返回自身</span><span class="err">（</span><span class="n">数值等</span><span class="err">）</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>创建闭包时（B_FN/B_MACRO）调用 <code>copy_body</code>，将函数体中的自由变量替换为当前值。</p>
+<h2 id="7">第7步：尾递归优化<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="cp">#define tail_eval(exp) do { \</span>
+<span class="cp">    sexp = (exp);           \</span>
+<span class="cp">    restore_stack(ss);      \</span>
+<span class="cp">    goto eval_top;          \</span>
+<span class="cp">} while(0);</span>
+</code></pre></div>
+<p>用法：函数体最后一个表达式求值前，检测到是尾位置 → 用 <code>tail_eval</code> 而非 <code>eval</code>，避免值栈增长。</p>
+<h2 id="8">第8步：垃圾回收<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="cheney">Cheney 半区复制<a class="headerlink" href="#cheney" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>GC 触发：halloc 分配时 g_curheap + size &gt; g_lim
+GC 过程：
+  1. 堆大小 *= 1.5（或 realloc g_newheap）
+  2. 交换 g_heap ↔ g_newheap（from-space ↔ to-space）
+  3. relocate 根集（g_stack, g_env_stack, symtab-&gt;binding）
+  4. 旧半区 memset 0x0A 毒化
+</code></pre></div>
+<h3 id="relocate">relocate 实现<a class="headerlink" href="#relocate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="n">value_t</span><span class="w"> </span><span class="nf">relocate_list</span><span class="p">(</span><span class="n">value_t</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">l</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EMPTY_LIST</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">l</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">RELOCATED_MARK</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">tail</span><span class="p">(</span><span class="n">l</span><span class="p">);</span><span class="w"> </span><span class="c1">// 已搬迁</span>
+<span class="w">    </span><span class="n">tail</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_relocate_list</span><span class="p">(</span><span class="n">l</span><span class="p">);</span><span class="w">   </span><span class="c1">// 复制到 to-space</span>
+<span class="w">    </span><span class="n">head</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RELOCATED_MARK</span><span class="p">;</span><span class="w">      </span><span class="c1">// 标记已搬迁，tail 指向新位置</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">tail</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>关键技巧</strong>：<code>RELOCATED_MARK</code> 作为 forwarding pointer 标记，head 存标记、tail 存新地址。</p>
+<h3 id="_12">根集<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>根</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>g_stack[0..g_sp)</code></td>
+<td>值栈中的所有 value_t</td>
+</tr>
+<tr>
+<td><code>g_env_stack[0..g_env_sp)</code></td>
+<td>环境栈中的 value_t（跳过符号条目）</td>
+</tr>
+<tr>
+<td><code>symtab</code></td>
+<td>每个 Symbol 的 binding 字段</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9repl">第9步：REPL<a class="headerlink" href="#9repl" title="Permanent link">&para;</a></h2>
+<h3 id="_13">核心循环<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">cf_lisp_repl</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;&gt;&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">save_sp_ep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_sp</span><span class="p">,</span><span class="w"> </span><span class="n">g_env_sp</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">setjmp</span><span class="p">(</span><span class="n">jmp_mark</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">read</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">symtab</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">g_sp</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">save_sp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eval</span><span class="p">(</span><span class="n">pop</span><span class="p">());</span>
+<span class="w">                </span><span class="n">cf_print</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">restore_stack</span><span class="p">(</span><span class="n">save_sp</span><span class="p">);</span><span class="w">  </span><span class="c1">// 错误恢复</span>
+<span class="w">            </span><span class="n">env_restore_stack</span><span class="p">(</span><span class="n">save_ep</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="fail">fail() 错误处理<a class="headerlink" href="#fail" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">fail</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">in_repl</span><span class="p">)</span><span class="w"> </span><span class="n">longjmp</span><span class="p">(</span><span class="n">jmp_mark</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>error</code> 宏用 <code>fprintf + fail()</code>，可在 REPL 中安全恢复。</p>
+<h2 id="10systemlsp">第10步：标准库（system.lsp）<a class="headerlink" href="#10systemlsp" title="Permanent link">&para;</a></h2>
+<h3 id="_14">实现策略<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
+<p><strong>用 Lisp 实现 Lisp：</strong></p>
+<ul>
+<li><code>defmacro</code> 和 <code>defun</code> 是宏，展开为 <code>def</code> + <code>macro</code>/<code>fn</code></li>
+<li><code>if</code> 宏展开为 <code>cond</code></li>
+<li><code>let</code> 宏展开为 <code>((fn (vars) body) vals)</code></li>
+<li><code>quasiquote</code> 展开算法完全在 Lisp 层实现</li>
+<li><code>map</code>/<code>fold</code>/<code>append</code>/<code>zip</code> 等用纯递归实现</li>
+</ul>
+<h3 id="splice-body">关键宏：splice-body<a class="headerlink" href="#splice-body" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nv">def</span><span class="w"> </span><span class="nv">splice-body</span>
+<span class="w">  </span><span class="p">(</span><span class="nv">fn</span><span class="w"> </span><span class="p">(</span><span class="nv">body</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(</span><span class="nb">cond</span><span class="w"> </span><span class="p">((</span><span class="nv">atom?</span><span class="w"> </span><span class="nv">body</span><span class="p">)</span><span class="w"> </span><span class="nv">body</span><span class="p">)</span>
+<span class="w">          </span><span class="p">((</span><span class="nb">=</span><span class="w"> </span><span class="p">(</span><span class="nv">tail</span><span class="w"> </span><span class="nv">body</span><span class="p">)</span><span class="w"> </span><span class="o">&#39;</span><span class="p">())</span><span class="w"> </span><span class="p">(</span><span class="nv">head</span><span class="w"> </span><span class="nv">body</span><span class="p">))</span>
+<span class="w">          </span><span class="p">(</span><span class="nv">else</span><span class="w"> </span><span class="p">(</span><span class="nb">cons</span><span class="w"> </span><span class="nb">do</span><span class="w"> </span><span class="nv">body</span><span class="p">)))))</span>
+</code></pre></div>
+<p>功能：将多表达式函数体自动包裹 <code>do</code>，单表达式保持原样，<code>atom?</code> 兜底。</p>
+<h2 id="_15">构建系统<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h2>
+<h3 id="cmake">CMake 配置要点<a class="headerlink" href="#cmake" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c"># 共享库（隐藏内部实现）</span>
+<span class="nb">add_library</span><span class="p">(</span><span class="s">cflisplib</span><span class="w"> </span><span class="s">SHARED</span><span class="w"> </span><span class="s">src/lisp_core.c</span><span class="w"> </span><span class="s">src/lisp_eval.c</span><span class="w"> </span><span class="s">...</span><span class="p">)</span>
+<span class="nb">target_compile_definitions</span><span class="p">(</span><span class="s">cflisplib</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">BUILDING_CF_LIB</span><span class="p">)</span>
+
+<span class="c"># 可执行文件</span>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">cflisp</span><span class="w"> </span><span class="s">src/lisp_main.c</span><span class="w"> </span><span class="s">system.lsp</span><span class="p">)</span>
+
+<span class="c"># 测试（Google Test）</span>
+<span class="nb">add_subdirectory</span><span class="p">(</span><span class="s">third_party/googletest</span><span class="p">)</span>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">unit_test</span><span class="w"> </span><span class="s">unit_test/test_cflisp.cpp</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">unit_test</span><span class="w"> </span><span class="s">test_utils</span><span class="w"> </span><span class="s">gtest</span><span class="w"> </span><span class="s">cflisplib</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="_16">测试技巧<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
+<p><code>cl_eval_string</code> 将 Lisp 代码字符串写入临时文件，然后 <code>cf_read_file</code> + <code>cf_eval_toplevel</code> 求值，最后删除临时文件。这是在没有 <code>read_string</code> 时的变通方案。</p>
+<h2 id="_17">快速实现检查表<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>产出</th>
+<th>验证方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>值表示</td>
+<td><code>value_t</code> 操作宏</td>
+<td>测试 tag/untag 数值、构造 List</td>
+</tr>
+<tr>
+<td>Reader</td>
+<td>解析 <code>(+ 1 2)</code> → 列表</td>
+<td><code>cf_mprint</code> 看 AST</td>
+</tr>
+<tr>
+<td>Printer</td>
+<td>打印任意 value_t</td>
+<td><code>cf_print(42)</code> → <code>42</code></td>
+</tr>
+<tr>
+<td>数值运算</td>
+<td><code>+ - * /</code></td>
+<td><code>(+ 1 2)</code> → <code>3</code></td>
+</tr>
+<tr>
+<td>符号 + def</td>
+<td><code>(def x 10)</code> + <code>x</code></td>
+<td><code>x</code> → <code>10</code></td>
+</tr>
+<tr>
+<td>quote/cond</td>
+<td><code>(quote (1 2))</code>、条件分支</td>
+<td>不求值引用、条件判断</td>
+</tr>
+<tr>
+<td>fn 闭包</td>
+<td><code>((fn (x) (+ x 1)) 2)</code></td>
+<td>→ <code>3</code></td>
+</tr>
+<tr>
+<td>宏</td>
+<td><code>macro</code> 创建 + 展开</td>
+<td>宏展开结果</td>
+</tr>
+<tr>
+<td>GC</td>
+<td>大量分配触发 gc</td>
+<td><code>(head (range 2000))</code> 通过</td>
+</tr>
+<tr>
+<td>REPL</td>
+<td>交互式循环 + 错误恢复</td>
+<td>输入错误不崩溃</td>
+</tr>
+<tr>
+<td>system.lsp</td>
+<td>所有标准库函数</td>
+<td><code>example.lsp</code> 全部通过</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright © 2026 cuzperf
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material
+        </a>
+        for 
+        <a href="https://www.mkdocs.org/" target="_blank" rel="noopener">
+          MkDocs
+        </a>
+      </div>
+      
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/cuzperf/cflisp" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="feed_rss_updated.xml" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M0 64c0-17.7 14.3-32 32-32 229.8 0 416 186.2 416 416 0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96 14.3 96 0 81.7 0 64m0 352a64 64 0 1 1 128 0 64 64 0 1 1-128 0m32-256c159.1 0 288 128.9 288 288 0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224-17.7 0-32-14.3-32-32s14.3-32 32-32"/></svg>
+    </a>
+  
+</div>
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.expand", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1239 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="cuzperf">
+      
+      
+        <link rel="canonical" href="https://cuzperf.github.io/cflisp/design/">
+      
+      
+        <link rel="prev" href="../dataFlow/">
+      
+      
+        <link rel="next" href="../implementation/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS 订阅" href="../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="已更新内容的 RSS 订阅" href="../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../img/cuzperf.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>设计文档 - cflisp docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cflisp" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="cflisp docs" class="md-header__button md-logo" aria-label="cflisp docs" data-md-component="logo">
+      
+  <img src="../img/favicon.ico" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            cflisp docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              设计文档
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="blue"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cuzperf/cflisp" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cuzperf/mkdocs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  主页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  参考手册
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dataFlow/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  处理流程图
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  设计文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../implementation/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  实现文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../QA/" class="md-tabs__link">
+          
+  
+  
+  杂项
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="cflisp docs" class="md-nav__button md-logo" aria-label="cflisp docs" data-md-component="logo">
+      
+  <img src="../img/favicon.ico" alt="logo">
+
+    </a>
+    cflisp docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cuzperf/cflisp" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cuzperf/mkdocs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    主页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考手册
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dataFlow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    处理流程图
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    设计文档
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    设计文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        设计目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键设计决策
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="关键设计决策">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tagged-pointer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagged Pointer（标签指针）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        符号表采用二叉搜索树（BST）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        环境栈布局
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cheney-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cheney 半区复制 GC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        深拷贝闭包捕获
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tco" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        尾递归优化（TCO）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        求值器设计
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systemlsp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        system.lsp（自举式标准库）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        代码组织原则
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实现文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    杂项
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    杂项
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    问答
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../qusiquote/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    拟引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        设计目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键设计决策
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="关键设计决策">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tagged-pointer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagged Pointer（标签指针）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        符号表采用二叉搜索树（BST）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        环境栈布局
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cheney-gc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cheney 半区复制 GC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        深拷贝闭包捕获
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tco" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        尾递归优化（TCO）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        求值器设计
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systemlsp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        system.lsp（自举式标准库）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        代码组织原则
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cflisp">cflisp 设计文档<a class="headerlink" href="#cflisp" title="Permanent link">&para;</a></h1>
+<h2 id="_1">设计目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>cflisp 的设计目标不是生产级 Lisp，而是<strong>以最精简的代码实现一个完整的 Lisp 解释器</strong>，作为学习编译器/解释器实现的教材。核心设计原则：</p>
+<ol>
+<li><strong>极简</strong> — 每个模块只做一件事，C 源码总量约 1500 行</li>
+<li><strong>自洽</strong> — 宏系统、准引用等高级特性尽可能用 Lisp 自身实现（system.lsp），而非 C</li>
+<li><strong>教学友好</strong> — 数据结构直观，命名清晰，标签/指针混用展示底层技巧</li>
+</ol>
+<h2 id="_2">关键设计决策<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="tagged-pointer">Tagged Pointer（标签指针）<a class="headerlink" href="#tagged-pointer" title="Permanent link">&para;</a></h3>
+<p>所有值用 <code>uintptr_t</code>（<code>value_t</code>）表示，低 2 位作类型标签：</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>类型</th>
+<th>值的含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0</td>
+<td>NUM</td>
+<td>数值左移 2 位</td>
+</tr>
+<tr>
+<td>0x1</td>
+<td>LIST</td>
+<td>堆指针 | 0x1</td>
+</tr>
+<tr>
+<td>0x2</td>
+<td>SYM</td>
+<td>BST 节点指针 | 0x2</td>
+</tr>
+<tr>
+<td>0x3</td>
+<td>OTHER</td>
+<td>堆指针 | 0x3（Builtin 等）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为何这么设计：</strong></p>
+<ul>
+<li><strong>零成本类型分派</strong> — 无需额外的类型字段，<code>tag(x)</code> 一个 <code>&amp;</code> 操作即得类型</li>
+<li><strong>数值直接内联</strong> — 小整数不占用堆空间，避免 GC 压力</li>
+<li><strong>指针天然对齐</strong> — 堆分配的对象至少 4 字节对齐，低 2 位恒为 0，可安全借用</li>
+</ul>
+<p><strong>代价：</strong> 仅支持 30 位整数（32 位系统）或 62 位整数（64 位系统），不支持浮点数（需扩展 tag 位或另用堆对象）。</p>
+<h3 id="bst">符号表采用二叉搜索树（BST）<a class="headerlink" href="#bst" title="Permanent link">&para;</a></h3>
+<p>符号存在 C 堆（<code>malloc</code>），非 GC 管理。按 hash 值排序：</p>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">_Symbol</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">value_t</span><span class="w"> </span><span class="n">binding</span><span class="p">;</span><span class="w">     </span><span class="c1">// 符号绑定的值</span>
+<span class="w">    </span><span class="n">hash_t</span><span class="w"> </span><span class="n">hash</span><span class="p">;</span><span class="w">         </span><span class="c1">// 字符串 hash</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">_Symbol</span><span class="o">*</span><span class="w"> </span><span class="n">left</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">_Symbol</span><span class="o">*</span><span class="w"> </span><span class="n">right</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w">        </span><span class="c1">// 柔性数组</span>
+<span class="p">}</span><span class="w"> </span><span class="n">Symbol</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>为何这么设计：</strong>
+- <strong>全局唯一性</strong> — 相同名字的符号复用同一 <code>Symbol</code> 节点
+- <strong>无 GC 干扰</strong> — 符号表不受 GC 影响，GC 只追踪 <code>binding</code> 字段
+- <strong>柔性数组</strong> — 一次 <code>malloc</code> 分配符号头和名字，减少碎片
+- <strong>BST 而非哈希表</strong> — 实现简单，无需扩容 rehash；对小型符号表性能足够</p>
+<h3 id="_3">环境栈布局<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>g_env_stack: [值, 符号, 值, 符号, ...]
+                        ↑
+                查找时从栈顶向下
+</code></pre></div>
+<p><strong>为何这么设计：</strong>
+- <strong>一层数组两条目</strong> — 每次 <code>env_push</code> 两次（先值后符号），查找时步长为 2
+- <strong>天然作用域嵌套</strong> — 新闭包创建时 <code>push</code>，闭包求值后 <code>pop</code>
+- <strong>变量遮蔽</strong> — 同名符号在栈中靠上的条目遮蔽靠下的</p>
+<h3 id="cheney-gc">Cheney 半区复制 GC<a class="headerlink" href="#cheney-gc" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>  ┌─────────────┐          ┌─────────────┐
+  │  g_heap     │  ──→     │  g_newheap  │
+  │  (from)     │  GC 后   │  (to)       │
+  └─────────────┘          └─────────────┘
+  (旧内容填 0x0A 毒化)      (存活对象复制至此)
+</code></pre></div>
+<p><strong>为何这么设计：</strong>
+- <strong>实现极简</strong> — 约 50 行 C 代码即完成
+- <strong>无碎片</strong> — 复制后对象紧密排列，分配只需 bump-pointer
+- <strong>分配快</strong> — <code>halloc</code> 只需移动指针 + 边界检查
+- <strong>教学价值</strong> — 经典的 stop-and-copy 算法，便于理解 GC 原理</p>
+<p><strong>代价：</strong> 吞吐量减半（每次 GC 复制所有存活对象），不适合大堆。</p>
+<h3 id="_4">深拷贝闭包捕获<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="n">value_t</span><span class="w"> </span><span class="n">copy_body</span><span class="p">(</span><span class="n">value_t</span><span class="w"> </span><span class="n">body</span><span class="p">)</span>
+</code></pre></div>
+<p>创建闭包时，<code>fn</code>/<code>macro</code> 对函数体做深度复制，同时将环境栈中绑定的自由变量替换为实际值。</p>
+<p><strong>为何这么设计：</strong></p>
+<ul>
+<li><strong>简化 GC</strong> — 闭包和外部环境无共享引用，GC 无需处理环</li>
+<li><strong>语义简单</strong> — 闭包创建后完全独立，无 shared-mutable 问题</li>
+<li><strong>实现直接</strong> — 遍历函数体 AST，遇到符号就在环境栈中查找替换</li>
+</ul>
+<p><strong>代价：</strong> 大闭包创建开销高，不支持 set! 等赋值操作（因为修改闭包内的捕获值不会影响外部）。</p>
+<h3 id="tco">尾递归优化（TCO）<a class="headerlink" href="#tco" title="Permanent link">&para;</a></h3>
+<p>通过 <code>tail_eval</code> 宏实现：</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#define tail_eval(exp) do { sexp = (exp); restore_stack(ss); goto eval_top; } while(0);</span>
+</code></pre></div>
+<p><strong>为何这么设计：</strong>
+- <strong>goto 而非 call</strong> — 避免 C 栈增长，实现真正的尾递归
+- <strong>恢复栈指针</strong> — 尾调用前释放当前栈帧（<code>restore_stack(ss)</code>），防止值栈泄漏
+- <strong>宏展开迭代</strong> — <code>tail_macro</code> 计数器确保宏展开的尾位置自动展开</p>
+<h2 id="_5">求值器设计<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p><code>eval_sexp</code> 是核心，用 <code>goto</code> 实现 TCO 和宏展开：</p>
+<div class="highlight"><pre><span></span><code>eval_top:
+  type_of(sexp)
+  ├── SYM → eval_sym (环境栈查找 → 符号表查找)
+  └── LIST →
+       ├── 求值 head 获得函数
+       ├── 如果是 Builtin → apply_builtin (switch 分派)
+       └── 如果是 List (fn/macro) → apply (准备环境 + 求值 body)
+            └── 尾位置 → tail_eval (goto eval_top)
+</code></pre></div>
+<h2 id="systemlsp">system.lsp（自举式标准库）<a class="headerlink" href="#systemlsp" title="Permanent link">&para;</a></h2>
+<p><strong>为何这么设计：</strong></p>
+<p>系统库用 Lisp 自身编写，展现了"语言长大成人"的过程：</p>
+<ul>
+<li><code>defmacro</code>、<code>defun</code>、<code>if</code>、<code>let</code> 用宏实现，避免在 C 中硬编码</li>
+<li><code>quasiquote</code> 的展开算法（<code>qq-expand</code> / <code>qq-expand-list</code>）完全用 Lisp 实现，体现了 Lisp 的"代码即数据"</li>
+<li><code>map</code>、<code>fold</code>、<code>append</code>、<code>zip</code> 等用纯 Lisp 实现，验证解释器的图灵完备性</li>
+</ul>
+<h2 id="_6">代码组织原则<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>职责</th>
+<th>对外接口（暴露在 lisp.h 中）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lisp_main.c</code></td>
+<td>入口</td>
+<td><code>main()</code></td>
+</tr>
+<tr>
+<td><code>lisp_core.c</code></td>
+<td>初始化、GC、栈、类型判断</td>
+<td><code>cf_lisp_init</code>, <code>cf_isNIL</code>, <code>type_of</code>, <code>push/pop</code></td>
+</tr>
+<tr>
+<td><code>lisp_eval.c</code></td>
+<td>求值器</td>
+<td><code>cf_eval_toplevel</code>, <code>eval</code>, <code>cf_num_val</code></td>
+</tr>
+<tr>
+<td><code>lisp_read.c</code></td>
+<td>读取器</td>
+<td><code>cf_read_file</code>, <code>read</code></td>
+</tr>
+<tr>
+<td><code>lisp_print.c</code></td>
+<td>打印机</td>
+<td><code>cf_print</code>, <code>cf_println</code>, <code>cf_mprint</code></td>
+</tr>
+<tr>
+<td><code>lisp_list.c</code></td>
+<td>列表构造</td>
+<td><code>cons</code>, <code>cons_</code>, <code>push_list</code>, <code>pop_list</code></td>
+</tr>
+<tr>
+<td><code>lisp_symbol.c</code></td>
+<td>符号表</td>
+<td><code>symbol</code>, <code>dump_symtab</code></td>
+</tr>
+<tr>
+<td><code>lisp_repl.c</code></td>
+<td>REPL</td>
+<td><code>cf_lisp_repl</code>, <code>fail</code></td>
+</tr>
+</tbody>
+</table>
+<p>模块间依赖单向：<code>eval → read/print/list/symbol/core</code>, <code>main → all</code>。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright © 2026 cuzperf
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material
+        </a>
+        for 
+        <a href="https://www.mkdocs.org/" target="_blank" rel="noopener">
+          MkDocs
+        </a>
+      </div>
+      
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/cuzperf/cflisp" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="feed_rss_updated.xml" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M0 64c0-17.7 14.3-32 32-32 229.8 0 416 186.2 416 416 0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96 14.3 96 0 81.7 0 64m0 352a64 64 0 1 1 128 0 64 64 0 1 1-128 0m32-256c159.1 0 288 128.9 288 288 0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224-17.7 0-32-14.3-32-32s14.3-32 32-32"/></svg>
+    </a>
+  
+</div>
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.expand", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>
