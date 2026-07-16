@@ -5,12 +5,12 @@
 # pip install mkdocs-encryptcontent-plugin
 
 # Linux/macOS
-# PYTHONPATH="${PYTHONPATH}:$(pwd)" mkdocs serve
-# PYTHONPATH="${PYTHONPATH}:$(pwd)" mkdocs gh-deploy
+# PYTHONPATH="${PYTHONPATH}:$(pwd)/docs" mkdocs serve
+# PYTHONPATH="${PYTHONPATH}:$(pwd)/docs" mkdocs gh-deploy
 
 # Windows CMD
-# set PYTHONPATH=%PYTHONPATH%;%CD% && mkdocs serve
-# set PYTHONPATH=%PYTHONPATH%;%CD% && mkdocs gh-deploy
+# set PYTHONPATH=%PYTHONPATH%;%CD%\docs && mkdocs serve
+# set PYTHONPATH=%PYTHONPATH%;%CD%\docs && mkdocs gh-deploy
 
 site_name: cflisp docs
 site_author: 'cuzperf'
