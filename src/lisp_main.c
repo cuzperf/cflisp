@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     if (has_script) {
         value_t user_sexpr = cf_read_file(script_file);
         cf_eval_toplevel(user_sexpr);
-    } else {
+    } else if (!g_dump_file) {
         cf_lisp_repl();
     }
 
