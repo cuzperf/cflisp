@@ -44,6 +44,10 @@ CF_API bool cf_isNIL(value_t v);
 // lisp_repl.c
 CF_API void cf_lisp_repl(void);
 
+// lisp_serialize.c
+CF_API void cf_lisp_serialize(const char* filename);
+CF_API bool cf_lisp_deserialize_image(const char* filename);
+
 #ifdef __cplusplus
 }
 #endif

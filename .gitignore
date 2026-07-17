@@ -4,6 +4,7 @@ build/
 .vscode/
 cflisp
 cflisp.exe
+*.img
 examples/test.lsp
 **/__pycache__/
 site/

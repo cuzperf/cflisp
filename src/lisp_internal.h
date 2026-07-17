@@ -159,6 +159,8 @@ extern int g_env_sp;
 void env_push(value_t v);
 void env_restore_stack(int n);
 
+extern Builtin g_builtins[N_BUILTINS];
+
 extern value_t FN, MACRO;
 extern value_t QUOTE, UNQUOTE, QUASIQUOTE, UNQUOTE_SPLICING;
 extern value_t REST;
