@@ -8,6 +8,7 @@ add_library(cflisplib SHARED
   src/lisp_read.c
   src/lisp_repl.c
   src/lisp_symbol.c
+  src/lisp_serialize.c
 )
 target_compile_options(cflisplib PRIVATE
     $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-g3>

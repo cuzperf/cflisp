@@ -41,6 +41,10 @@ CF_API number_t cf_num_val(value_t x);
 CF_API void cf_lisp_init(void);
 CF_API bool cf_isNIL(value_t v);
 
+// lisp_serialize.c
+CF_API void cf_save_image(const char* path);
+CF_API bool cf_load_image(const char* path);
+
 // lisp_repl.c
 CF_API void cf_lisp_repl(void);
 
