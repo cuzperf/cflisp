@@ -8,7 +8,7 @@
 static jmp_buf jmp_mark;
 static bool in_repl = false;
 
-void fail()
+void fail(void)
 {
     if (in_repl) {
         longjmp(jmp_mark, -1);
@@ -17,7 +17,7 @@ void fail()
     }
 }
 
-CF_API void cf_lisp_repl()
+CF_API void cf_lisp_repl(void)
 {
     in_repl = true;
     while (true) {

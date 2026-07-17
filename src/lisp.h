@@ -38,11 +38,11 @@ CF_API value_t cf_eval_toplevel(value_t l);
 CF_API number_t cf_num_val(value_t x);
 
 // lisp_core.c
-CF_API void cf_lisp_init();
+CF_API void cf_lisp_init(void);
 CF_API bool cf_isNIL(value_t v);
 
 // lisp_repl.c
-CF_API void cf_lisp_repl();
+CF_API void cf_lisp_repl(void);
 
 #ifdef __cplusplus
 }

@@ -28,7 +28,7 @@ Symbol* symtab = NULL;
 static int g_stack_size = STACK_SIZE;
 static int g_env_stack_size = ENV_SIZE;
 
-CF_API void cf_lisp_init()
+CF_API void cf_lisp_init(void)
 {
     g_oldheap = NULL;
     symtab = NULL;
@@ -91,7 +91,7 @@ void push(value_t v)
     g_stack[g_sp++] = v;
 }
 
-value_t pop()
+value_t pop(void)
 {
     return g_stack[--g_sp];
 }
@@ -135,13 +135,13 @@ static void relocate_symtab(Symbol*);
 bool is_gc = false;
 
 // LCOV_EXCL_START
-bool in_gc()
+bool in_gc(void)
 {
     return is_gc;
 }
 // LCOV_EXCL_STOP
 
-void gc()
+void gc(void)
 {
     if (is_gc) {
         // NOTE: 理论上只要 HEAP_RESIZE_RATIO 严格大于1 ，此处应该无法被覆盖 [陈智鹏@2026-7-15]
@@ -260,7 +260,7 @@ static void* halloc(size_t s)
 
 // LCOV_EXCL_START
 
-void dump_heap()
+void dump_heap(void)
 {
     printf("dump_heap begin---------------------------:\n");
     for (memory_t m = g_heap; m < g_curheap; ++m) {
@@ -271,7 +271,7 @@ void dump_heap()
     printf("dump_heap end---------------------------\n");
 }
 
-void dump_stack()
+void dump_stack(void)
 {
     printf("dump_stack begin---------------------------:\n");
     for (int i = 0; i < g_env_sp; ++i) {
@@ -280,7 +280,7 @@ void dump_stack()
     printf("dump_stack end---------------------------\n");
 }
 
-void dump_env()
+void dump_env(void)
 {
     printf("dump_env begin---------------------------:\n");
     for (int i = 0; i < g_env_sp; i += 2) {
@@ -289,28 +289,6 @@ void dump_env()
         cf_println(g_env_stack[i + 1]);
     }
     printf("dump_env end---------------------------\n");
-}
-
-// 以下函数暂未使用
-value_t top()
-{
-    return g_stack[g_sp - 1];
-}
-
-value_t popn(int n)
-{
-    g_sp -= n;
-    return g_stack[g_sp];
-}
-
-value_t env_top()
-{
-    return g_env_stack[g_env_sp - 1];
-}
-
-value_t env_pop()
-{
-    return g_env_stack[--g_env_sp];
 }
 
 // LCOV_EXCL_STOP

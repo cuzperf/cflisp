@@ -117,8 +117,8 @@ typedef struct {
 
 // lisp_gc.c
 value_t make_cell(value_t v);
-void gc();
-bool in_gc();
+void gc(void);
+bool in_gc(void);
 
 // lisp_symbol.c
 extern Symbol* symtab;
@@ -144,23 +144,19 @@ value_t eval(value_t);
 
 // lisp_core.c
 type_t type_of(value_t v);
-void dump_heap();
-void dump_stack();
-void dump_env();
+void dump_heap(void);
+void dump_stack(void);
+void dump_env(void);
 
 extern value_t* g_stack;
 extern int g_sp;
 void push(value_t v);
-value_t top();
-value_t pop();
-value_t popn(int n);
+value_t pop(void);
 void restore_stack(int n);
 
 extern value_t* g_env_stack;
 extern int g_env_sp;
 void env_push(value_t v);
-value_t env_top();
-value_t env_pop();
 void env_restore_stack(int n);
 
 extern value_t FN, MACRO;
@@ -171,7 +167,7 @@ extern value_t NIL, T;
 extern const char* builtin_names[N_BUILTINS + 1];
 
 // lisp_repl.c
-void fail();
+void fail(void);
 
 static inline List* safe_listval(value_t v)
 {

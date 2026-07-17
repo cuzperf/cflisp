@@ -537,16 +537,3 @@ static value_t eqp(value_t v1, value_t v2)
     }
     return v1 == v2 ? T : NIL;
 }
-
-// 未被使用
-#if 0
-static void prepare_args(value_t args)
-{
-    int ss = g_sp;
-    push_list(args);
-
-    for (int i = ss; i < g_sp; ++i) {
-        g_stack[i] = eval(g_stack[i]);
-    }
-}
-#endif
