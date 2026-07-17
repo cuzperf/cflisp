@@ -30,7 +30,7 @@ CF_API number_t cf_num_val(value_t x)
 }
 
 /**
- * @brief 顶层求值，先反序压栈，再从最底层网上求值
+ * @brief 顶层求值，先列表参数反序压栈，再从最顶层往上求值
  */
 CF_API value_t cf_eval_toplevel(value_t l)
 {

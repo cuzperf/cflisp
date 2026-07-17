@@ -132,7 +132,7 @@ value_t make_cell(value_t v)
 static value_t relocate(value_t);
 static void relocate_symtab(Symbol*);
 
-bool is_gc = 0;
+bool is_gc = false;
 
 // LCOV_EXCL_START
 bool in_gc()
@@ -291,11 +291,7 @@ void dump_env()
     printf("dump_env end---------------------------\n");
 }
 
-// LCOV_EXCL_STOP
-
-// 未被使用的函数
-#if 0
-
+// 以下函数暂未使用
 value_t top()
 {
     return g_stack[g_sp - 1];
@@ -316,4 +312,5 @@ value_t env_pop()
 {
     return g_env_stack[--g_env_sp];
 }
-#endif
+
+// LCOV_EXCL_STOP

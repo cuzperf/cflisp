@@ -64,6 +64,7 @@ value_t pop_list(int ss)
 
 /**
  * @brief 将可变参数个元素，构建成一个以 h 为顶元素的 List
+ * @note 最后一个参数应为 END
  */
 value_t make_list(value_t h, ...)
 {

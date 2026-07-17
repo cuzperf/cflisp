@@ -128,8 +128,7 @@ value_t symbol(const char* name, Symbol** env)
 void dump_symtab(Symbol* s)
 {
     printf("%s :", s->name);
-    cf_print(s->binding);
-    NL;
+    cf_println(s->binding);
     if (s->left) {
         printf(" ");
         dump_symtab(s->left);
