@@ -2,7 +2,7 @@ add_library(cflisplib SHARED
   src/lisp.h
   src/lisp_internal.h
   src/lisp_core.c
-  src/lisp_dump.c
+  src/lisp_serialize.c
   src/lisp_eval.c
   src/lisp_list.c
   src/lisp_print.c

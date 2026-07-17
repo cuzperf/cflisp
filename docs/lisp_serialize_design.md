@@ -67,7 +67,7 @@ for i = 0..num_cells-1:
 ## 4. 序列化算法
 
 ```
-cf_lisp_dump(filename):
+cf_lisp_serialize(filename):
     1. 收集符号: 中序遍历 symtab BST → 按 hash 升序排列，分配 index
     2. 收集 Cell: 从所有符号的 binding 出发，BFS 遍历所有可达 cons cell，分配 index
     3. 写 Header
@@ -78,7 +78,7 @@ cf_lisp_dump(filename):
 ## 5. 反序列化算法
 
 ```
-cf_lisp_load_image(filename):
+cf_lisp_deserialize_image(filename):
     1. 读 Header，校验 magic/version
     2. 读符号表: 每读取一个 (name, pending_binding)，调用 symbol() 在 symtab 中查找/
        创建符号，储存 Symbol* 到临时数组
@@ -96,11 +96,11 @@ cf_lisp_load_image(filename):
 ## 6. 命令行接口
 
 ```
-cflisp                           # 默认: 尝试加载 cflisp.img，失败则加载 system.lsp
-cflisp --no-image                # 跳过镜像加载，直接加载 system.lsp
-cflisp --dump <file>             # 执行完毕后序列化到 <file>
-cflisp script.lsp                # 执行脚本 (兼容已有行为)
-cflisp script.lsp --dump a.img   # 执行脚本并 dump 镜像
+cflisp                                    # 默认: 尝试加载 cflisp.img，失败则加载 system.lsp
+cflisp --no-image                         # 跳过镜像加载，直接加载 system.lsp
+cflisp --output-image <file>              # 执行完毕后序列化到 <file>
+cflisp script.lsp                         # 执行脚本 (兼容已有行为)
+cflisp script.lsp --output-image a.img    # 执行脚本并序列化镜像
 ```
 
 ## 7. 功能等价性保证

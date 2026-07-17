@@ -154,7 +154,7 @@ static value_t resolve_value(uint32_t tag, int32_t data, Symbol** syms, int cell
 /* ================================================================
  *  Public API
  * ================================================================ */
-CF_API void cf_lisp_dump(const char* filename)
+CF_API void cf_lisp_serialize(const char* filename)
 {
     /* --- collect symbols --- */
     Map sym_map;
@@ -170,7 +170,7 @@ CF_API void cf_lisp_dump(const char* filename)
     /* --- write image --- */
     FILE* f = fopen(filename, "wb");
     if (!f) {
-        fprintf(stderr, "--- failed to open dump file: %s ---\n", filename);
+        fprintf(stderr, "--- failed to open output image file: %s ---\n", filename);
         map_free(&cell_map);
         map_free(&sym_map);
         return;
@@ -206,11 +206,11 @@ CF_API void cf_lisp_dump(const char* filename)
     map_free(&cell_map);
     map_free(&sym_map);
 
-    printf("--- dumped %u symbols and %u cells to %s ---\n",
+    printf("--- serialized %u symbols and %u cells to %s ---\n",
            num_syms, num_cells, filename);
 }
 
-CF_API bool cf_lisp_load_image(const char* filename)
+CF_API bool cf_lisp_deserialize_image(const char* filename)
 {
     FILE* f = fopen(filename, "rb");
     if (!f) return false;
@@ -288,7 +288,7 @@ CF_API bool cf_lisp_load_image(const char* filename)
     free(cell_tail_tags);
     free(cell_tail_data);
 
-    printf("--- loaded image %s (%u symbols, %u cells) ---\n",
+    printf("--- deserialized image %s (%u symbols, %u cells) ---\n",
            filename, num_syms, num_cells);
     return true;
 
