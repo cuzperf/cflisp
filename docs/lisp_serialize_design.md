@@ -36,16 +36,19 @@ Offset  Size   Field
 每个 `value_t` 序列化为固定 8 字节：
 
 ```
-uint32_t tag   (TYPE_NUM=0, TYPE_LIST=1, TYPE_SYM=2, TYPE_BUILTIN=3)
-int32_t  data  (含义取决于 tag)
+int32_t encoded = (data << 2) | type
 ```
 
-| tag | data 含义 |
-|-----|----------|
-| TYPE_NUM (0) | 整数值 |
-| TYPE_LIST (1) | cell 数组索引 (EMPTY_LIST = -1) |
-| TYPE_SYM (2) | symbol 数组索引 (UNBOUND = -1) |
-| TYPE_BUILTIN (3) | BuiltinCode 枚举值 |
+其中：
+- 低 2 位: `type` — `TYPE_NUM=0`, `TYPE_LIST=1`, `TYPE_SYM=2`, `TYPE_BUILTIN=3`
+- 高 30 位: `data` — 含义取决于 type
+
+| type | data 含义 | 特殊值 |
+|------|----------|--------|
+| TYPE_NUM (0) | 整数值 (cf_num_val) | - |
+| TYPE_LIST (1) | cell 索引 | data = -1 → EMPTY_LIST |
+| TYPE_SYM (2) | symbol 索引 | data = -1 → UNBOUND |
+| TYPE_BUILTIN (3) | BuiltinCode 枚举值 | - |
 
 ### 3.3 Symbol Table
 
@@ -71,8 +74,8 @@ cf_lisp_serialize(filename):
     1. 收集符号: 中序遍历 symtab BST → 按 hash 升序排列，分配 index
     2. 收集 Cell: 从所有符号的 binding 出发，BFS 遍历所有可达 cons cell，分配 index
     3. 写 Header
-    4. 写符号表: 对每个符号，写入 name + serialized(binding)
-    5. 写 Cell 表: 对每个 cell，写入 serialized(head) + serialized(tail)
+    4. 写符号表: 对每个符号，写入 name + encode_value(binding)
+    5. 写 Cell 表: 对每个 cell，写入 encode_value(head) + encode_value(tail)
 ```
 
 ## 5. 反序列化算法
@@ -82,16 +85,27 @@ cf_lisp_deserialize_image(filename):
     1. 读 Header，校验 magic/version
     2. 读符号表: 每读取一个 (name, pending_binding)，调用 symbol() 在 symtab 中查找/
        创建符号，储存 Symbol* 到临时数组
-    3. 读 Cell 表: 暂存每项 head/tail 的 pending value 到临时数组
-    4. 分配 Cell: 对每个 cell，调用 make_cell(UNBOUND)，push 到值栈保护
-    5. 解析符号绑定: resolve 每个符号的 pending_binding → 设置 sym->binding
-    6. 解析 Cell: resolve 每个 cell 的 pending head/tail → 写入 cell->head, cell->tail
-    7. 弹栈，释放临时数组
+    3. 读 Cell 表: 读出每个 cell 的 head/tail pending 值到临时数组
+    4. 预扩堆: gc_reserve(num_cells * sizeof(List))，确保后续 make_cell 不触发 GC
+    5. 分配 Cell: make_cell(UNBOUND)，指针存临时数组 cells[]
+    6. 解析符号绑定: decode_value 每个 pending_binding → 设置 sym->binding
+    7. 解析 Cell: decode_value head/tail → 写入 cell->head, cell->tail
+    8. 释放临时数组
 ```
 
-### 5.1 GC 保护
+### 5.1 GC 保护策略变更
 
-反序列化期间，所有已分配的 Cell 都 push 在值栈上（`g_stack[cell_ss : cell_ss+num_cells)`），作为 GC 根。解析阶段不会触发 GC（仅构造 tagged pointer，不分配内存），保证了 `g_stack[]` 中 Cell 指针的有效性。
+**v1 问题**：所有 Cell 通过 `push()` 保护在值栈 (`g_stack`) 上，值栈固定大小 160K 条目，若镜像 Cell 数超过此值会爆栈（`g_sp >= g_stack_size`）。
+
+**v2 方案**：反向化——先通过 `gc_reserve()` 预扩 GC 堆确保容量足够，之后 `make_cell()` / `halloc()` 不会触发 GC，因此不需要在值栈上保护 Cell。Cell 指针暂存于 `malloc` 临时数组 `cells[]`，解析完毕后释放。彻底消除爆栈风险，同时不产生值栈残留。
+
+### 5.2 函数接口
+
+| 函数 | 用途 |
+|------|------|
+| `encode_value(v, sym_map, cell_map)` | 将 value_t 编码为紧凑 4 字节 int32_t |
+| `decode_value(encoded, syms, cells)` | 从紧凑编码还原 value_t |
+| `gc_reserve(bytes)` | 预扩 GC 堆确保至少 `bytes` 空闲空间 |
 
 ## 6. 命令行接口
 
@@ -120,6 +134,6 @@ cflisp script.lsp --output-image a.img    # 执行脚本并序列化镜像
 | `type_of()` | 获取值的类型 |
 | `list_val()` / `sym_val()` / `builtin_val()` / `ptr()` | 解引用 tagged pointer |
 | `tagptr()` / `number()` / `list()` | 构造 tagged pointer |
-| `push()` / `pop()` / `restore_stack()` | 值栈操作 |
+| `gc_reserve()` | 预扩 GC 堆 |
 | `EMPTY_LIST` / `UNBOUND` / `NIL` / `T` | 特殊值常量 |
 | `g_builtins[]` / `N_BUILTINS` | 内置函数表 |

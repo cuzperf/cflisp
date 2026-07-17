@@ -1,7 +1,7 @@
 #include "lisp_internal.h"
 
 #define IMAGE_MAGIC     ((uint32_t)0x4D444C46U)  /* "FLDM" little-endian */
-#define IMAGE_VERSION   ((uint32_t)1U)
+#define IMAGE_VERSION   ((uint32_t)2U)
 
 /* ================================================================
  *  Simple Map: void* key -> int32_t value
@@ -97,15 +97,26 @@ static void collect_all_cells(Map* cell_map)
 }
 
 /* ================================================================
- *  Serialized value I/O
+ *  Compact value encoding (4 bytes / value)
+ *
+ *  Format: int32_t = (data << 2) | type
+ *    type: TYPE_NUM=0, TYPE_LIST=1, TYPE_SYM=2, TYPE_BUILTIN=3
+ *    data:
+ *      TYPE_NUM:     number value (cf_num_val)
+ *      TYPE_LIST:    cell index, -1 for EMPTY_LIST
+ *      TYPE_SYM:     symbol index, -1 for UNBOUND
+ *      TYPE_BUILTIN: BuiltinCode enum
  * ================================================================ */
-static void write_value(FILE* f, value_t v, const Map* sym_map, const Map* cell_map)
+static int32_t encode_value(value_t v, const Map* sym_map, const Map* cell_map)
 {
     uint32_t tag;
     int32_t  data;
 
     if (v == UNBOUND) {
-        tag  = (uint32_t)TYPE_SYM;
+        tag  = TYPE_SYM;
+        data = -1;
+    } else if (v == EMPTY_LIST) {
+        tag  = TYPE_LIST;
         data = -1;
     } else {
         tag = (uint32_t)type_of(v);
@@ -114,7 +125,7 @@ static void write_value(FILE* f, value_t v, const Map* sym_map, const Map* cell_
             data = cf_num_val(v);
             break;
         case TYPE_LIST:
-            data = (v == EMPTY_LIST) ? -1 : map_get(cell_map, ptr(v));
+            data = map_get(cell_map, ptr(v));
             break;
         case TYPE_SYM:
             data = map_get(sym_map, ptr(v));
@@ -123,28 +134,22 @@ static void write_value(FILE* f, value_t v, const Map* sym_map, const Map* cell_
             data = (int32_t)builtin_val(v)->code;
             break;
         default:
-            tag  = (uint32_t)TYPE_SYM;
+            tag  = TYPE_SYM;
             data = -1;
             break;
         }
     }
-
-    fwrite(&tag,  sizeof(uint32_t), 1, f);
-    fwrite(&data, sizeof(int32_t),  1, f);
+    return (int32_t)(((uint32_t)data << 2) | tag);
 }
 
-static int read_pending(FILE* f, uint32_t* tag, int32_t* data)
+static value_t decode_value(int32_t encoded, Symbol** syms, value_t* cells)
 {
-    if (fread(tag, sizeof(uint32_t), 1, f) != 1) return 0;
-    if (fread(data, sizeof(int32_t), 1, f) != 1) return 0;
-    return 1;
-}
+    uint32_t tag  = (uint32_t)encoded & 3;
+    int32_t  data = encoded >> 2;
 
-static value_t resolve_value(uint32_t tag, int32_t data, Symbol** syms, int cell_ss)
-{
     switch (tag) {
     case TYPE_NUM:     return number(data);
-    case TYPE_LIST:    return (data == -1) ? EMPTY_LIST : g_stack[cell_ss + data];
+    case TYPE_LIST:    return (data == -1) ? EMPTY_LIST : cells[data];
     case TYPE_SYM:     return (data == -1) ? UNBOUND : tagptr(syms[data], TAG_SYM);
     case TYPE_BUILTIN: return tagptr(&g_builtins[data], TAG_OTHER);
     default:           return UNBOUND;
@@ -190,16 +195,19 @@ CF_API void cf_lisp_serialize(const char* filename)
     for (int i = 0; i < sym_map.count; ++i) {
         Symbol*  s        = (Symbol*)sym_map.entries[i].key;
         uint16_t name_len = (uint16_t)strlen(s->name);
+        int32_t  binding  = encode_value(s->binding, &sym_map, &cell_map);
         fwrite(&name_len, sizeof(uint16_t), 1, f);
         fwrite(s->name, 1, name_len, f);
-        write_value(f, s->binding, &sym_map, &cell_map);
+        fwrite(&binding, sizeof(int32_t), 1, f);
     }
 
     /* cell table */
     for (int i = 0; i < cell_map.count; ++i) {
-        List* cell = (List*)cell_map.entries[i].key;
-        write_value(f, cell->head, &sym_map, &cell_map);
-        write_value(f, cell->tail, &sym_map, &cell_map);
+        List*  cell = (List*)cell_map.entries[i].key;
+        int32_t h   = encode_value(cell->head, &sym_map, &cell_map);
+        int32_t t   = encode_value(cell->tail, &sym_map, &cell_map);
+        fwrite(&h, sizeof(int32_t), 1, f);
+        fwrite(&t, sizeof(int32_t), 1, f);
     }
 
     fclose(f);
@@ -224,13 +232,11 @@ CF_API bool cf_lisp_deserialize_image(const char* filename)
     if (fread(&num_cells, sizeof(uint32_t), 1, f) != 1) goto fail;
 
     /* --- allocate pending arrays --- */
-    Symbol**  syms              = (Symbol**) calloc(num_syms,  sizeof(Symbol*));
-    uint32_t* sym_binding_tags  = (uint32_t*)malloc(num_syms  * sizeof(uint32_t));
-    int32_t*  sym_binding_data  = (int32_t*) malloc(num_syms  * sizeof(int32_t));
-    uint32_t* cell_head_tags    = (uint32_t*)malloc(num_cells * sizeof(uint32_t));
-    int32_t*  cell_head_data    = (int32_t*) malloc(num_cells * sizeof(int32_t));
-    uint32_t* cell_tail_tags    = (uint32_t*)malloc(num_cells * sizeof(uint32_t));
-    int32_t*  cell_tail_data    = (int32_t*) malloc(num_cells * sizeof(int32_t));
+    Symbol** syms          = (Symbol**) calloc(num_syms,  sizeof(Symbol*));
+    int32_t* sym_binding   = (int32_t*) malloc(num_syms  * sizeof(int32_t));
+    int32_t* cell_head     = (int32_t*) malloc(num_cells * sizeof(int32_t));
+    int32_t* cell_tail     = (int32_t*) malloc(num_cells * sizeof(int32_t));
+    value_t* cells         = NULL;
 
     /* --- read symbol entries --- */
     for (uint32_t i = 0; i < num_syms; ++i) {
@@ -244,62 +250,62 @@ CF_API bool cf_lisp_deserialize_image(const char* filename)
         syms[i] = sym_val(sv);
         free(name);
 
-        if (!read_pending(f, &sym_binding_tags[i], &sym_binding_data[i]))
+        if (fread(&sym_binding[i], sizeof(int32_t), 1, f) != 1)
             goto fail_free;
     }
 
-    /* --- read cell entries (pending) --- */
+    /* --- read cell entries --- */
     for (uint32_t i = 0; i < num_cells; ++i) {
-        if (!read_pending(f, &cell_head_tags[i], &cell_head_data[i])) goto fail_free;
-        if (!read_pending(f, &cell_tail_tags[i], &cell_tail_data[i])) goto fail_free;
+        if (fread(&cell_head[i], sizeof(int32_t), 1, f) != 1) goto fail_free;
+        if (fread(&cell_tail[i], sizeof(int32_t), 1, f) != 1) goto fail_free;
     }
 
     fclose(f);
     f = NULL;
 
-    /* --- allocate cells on GC heap, protect on value stack --- */
-    int cell_ss = g_sp;
+    /* --- pre-expand heap to avoid GC during allocation --- */
+    if (num_cells > 0) {
+        if (!gc_reserve((size_t)num_cells * sizeof(List))) {
+            fprintf(stderr, "--- gc_reserve failed for %u cells ---\n", num_cells);
+            goto fail_free;
+        }
+    }
+
+    /* --- allocate cells (no GC risk after gc_reserve) --- */
+    cells = (value_t*)malloc(num_cells * sizeof(value_t));
     for (uint32_t i = 0; i < num_cells; ++i) {
-        value_t cell = make_cell(UNBOUND);
-        push(cell);
+        cells[i] = make_cell(UNBOUND);
     }
 
     /* --- resolve symbol bindings --- */
     for (uint32_t i = 0; i < num_syms; ++i) {
-        syms[i]->binding = resolve_value(sym_binding_tags[i], sym_binding_data[i],
-                                         syms, cell_ss);
+        syms[i]->binding = decode_value(sym_binding[i], syms, cells);
     }
 
     /* --- resolve cell contents --- */
     for (uint32_t i = 0; i < num_cells; ++i) {
-        List* cell   = list_val(g_stack[cell_ss + i]);
-        cell->head = resolve_value(cell_head_tags[i], cell_head_data[i], syms, cell_ss);
-        cell->tail = resolve_value(cell_tail_tags[i], cell_tail_data[i], syms, cell_ss);
+        List* cell = list_val(cells[i]);
+        cell->head = decode_value(cell_head[i], syms, cells);
+        cell->tail = decode_value(cell_tail[i], syms, cells);
     }
 
     /* --- cleanup --- */
-    restore_stack(cell_ss);
-
+    free(cells);
     free(syms);
-    free(sym_binding_tags);
-    free(sym_binding_data);
-    free(cell_head_tags);
-    free(cell_head_data);
-    free(cell_tail_tags);
-    free(cell_tail_data);
+    free(sym_binding);
+    free(cell_head);
+    free(cell_tail);
 
     printf("--- deserialized image %s (%u symbols, %u cells) ---\n",
            filename, num_syms, num_cells);
     return true;
 
 fail_free:
+    free(cells);
     free(syms);
-    free(sym_binding_tags);
-    free(sym_binding_data);
-    free(cell_head_tags);
-    free(cell_head_data);
-    free(cell_tail_tags);
-    free(cell_tail_data);
+    free(sym_binding);
+    free(cell_head);
+    free(cell_tail);
 fail:
     if (f) fclose(f);
     return false;

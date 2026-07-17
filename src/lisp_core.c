@@ -258,6 +258,18 @@ static void* halloc(size_t s)
     return (void*)h;
 }
 
+int gc_reserve(size_t bytes)
+{
+    int iterations = 0;
+    while (g_curheap + bytes >= g_lim) {
+        if (iterations++ > 64) {
+            return 0;
+        }
+        gc();
+    }
+    return 1;
+}
+
 // LCOV_EXCL_START
 
 void dump_heap(void)

@@ -119,6 +119,7 @@ typedef struct {
 value_t make_cell(value_t v);
 void gc(void);
 bool in_gc(void);
+int gc_reserve(size_t bytes);
 
 // lisp_symbol.c
 extern Symbol* symtab;
