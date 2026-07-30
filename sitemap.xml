@@ -2,30 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cuzperf.github.io/cflisp/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
     <url>
          <loc>https://cuzperf.github.io/cflisp/QA/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
     <url>
          <loc>https://cuzperf.github.io/cflisp/dataFlow/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
     <url>
          <loc>https://cuzperf.github.io/cflisp/design/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
     <url>
          <loc>https://cuzperf.github.io/cflisp/implementation/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
     <url>
          <loc>https://cuzperf.github.io/cflisp/qusiquote/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
     <url>
          <loc>https://cuzperf.github.io/cflisp/reference/</loc>
-         <lastmod>2026-07-16</lastmod>
+         <lastmod>2026-07-30</lastmod>
     </url>
 </urlset>

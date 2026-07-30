@@ -1032,20 +1032,24 @@
 <span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w">        </span><span class="c1">// 柔性数组</span>
 <span class="p">}</span><span class="w"> </span><span class="n">Symbol</span><span class="p">;</span>
 </code></pre></div>
-<p><strong>为何这么设计：</strong>
-- <strong>全局唯一性</strong> — 相同名字的符号复用同一 <code>Symbol</code> 节点
-- <strong>无 GC 干扰</strong> — 符号表不受 GC 影响，GC 只追踪 <code>binding</code> 字段
-- <strong>柔性数组</strong> — 一次 <code>malloc</code> 分配符号头和名字，减少碎片
-- <strong>BST 而非哈希表</strong> — 实现简单，无需扩容 rehash；对小型符号表性能足够</p>
+<p><strong>为何这么设计：</strong></p>
+<ul>
+<li><strong>全局唯一性</strong> — 相同名字的符号复用同一 <code>Symbol</code> 节点</li>
+<li><strong>无 GC 干扰</strong> — 符号表不受 GC 影响，GC 只追踪 <code>binding</code> 字段</li>
+<li><strong>柔性数组</strong> — 一次 <code>malloc</code> 分配符号头和名字，减少碎片</li>
+<li><strong>BST 而非哈希表</strong> — 实现简单，无需扩容 rehash；对小型符号表性能足够</li>
+</ul>
 <h3 id="_3">环境栈布局<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>g_env_stack: [值, 符号, 值, 符号, ...]
                         ↑
                 查找时从栈顶向下
 </code></pre></div>
-<p><strong>为何这么设计：</strong>
-- <strong>一层数组两条目</strong> — 每次 <code>env_push</code> 两次（先值后符号），查找时步长为 2
-- <strong>天然作用域嵌套</strong> — 新闭包创建时 <code>push</code>，闭包求值后 <code>pop</code>
-- <strong>变量遮蔽</strong> — 同名符号在栈中靠上的条目遮蔽靠下的</p>
+<p><strong>为何这么设计：</strong></p>
+<ul>
+<li><strong>一层数组两条目</strong> — 每次 <code>env_push</code> 两次（先值后符号），查找时步长为 2</li>
+<li><strong>天然作用域嵌套</strong> — 新闭包创建时 <code>push</code>，闭包求值后 <code>pop</code></li>
+<li><strong>变量遮蔽</strong> — 同名符号在栈中靠上的条目遮蔽靠下的</li>
+</ul>
 <h3 id="cheney-gc">Cheney 半区复制 GC<a class="headerlink" href="#cheney-gc" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>  ┌─────────────┐          ┌─────────────┐
   │  g_heap     │  ──→     │  g_newheap  │
@@ -1053,11 +1057,13 @@
   └─────────────┘          └─────────────┘
   (旧内容填 0x0A 毒化)      (存活对象复制至此)
 </code></pre></div>
-<p><strong>为何这么设计：</strong>
-- <strong>实现极简</strong> — 约 50 行 C 代码即完成
-- <strong>无碎片</strong> — 复制后对象紧密排列，分配只需 bump-pointer
-- <strong>分配快</strong> — <code>halloc</code> 只需移动指针 + 边界检查
-- <strong>教学价值</strong> — 经典的 stop-and-copy 算法，便于理解 GC 原理</p>
+<p><strong>为何这么设计：</strong></p>
+<ul>
+<li><strong>实现极简</strong> — 约 50 行 C 代码即完成</li>
+<li><strong>无碎片</strong> — 复制后对象紧密排列，分配只需 bump-pointer</li>
+<li><strong>分配快</strong> — <code>halloc</code> 只需移动指针 + 边界检查</li>
+<li><strong>教学价值</strong> — 经典的 stop-and-copy 算法，便于理解 GC 原理</li>
+</ul>
 <p><strong>代价：</strong> 吞吐量减半（每次 GC 复制所有存活对象），不适合大堆。</p>
 <h3 id="_4">深拷贝闭包捕获<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="n">value_t</span><span class="w"> </span><span class="n">copy_body</span><span class="p">(</span><span class="n">value_t</span><span class="w"> </span><span class="n">body</span><span class="p">)</span>
@@ -1074,10 +1080,12 @@
 <p>通过 <code>tail_eval</code> 宏实现：</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#define tail_eval(exp) do { sexp = (exp); restore_stack(ss); goto eval_top; } while(0);</span>
 </code></pre></div>
-<p><strong>为何这么设计：</strong>
-- <strong>goto 而非 call</strong> — 避免 C 栈增长，实现真正的尾递归
-- <strong>恢复栈指针</strong> — 尾调用前释放当前栈帧（<code>restore_stack(ss)</code>），防止值栈泄漏
-- <strong>宏展开迭代</strong> — <code>tail_macro</code> 计数器确保宏展开的尾位置自动展开</p>
+<p><strong>为何这么设计：</strong></p>
+<ul>
+<li><strong>goto 而非 call</strong> — 避免 C 栈增长，实现真正的尾递归</li>
+<li><strong>恢复栈指针</strong> — 尾调用前释放当前栈帧（<code>restore_stack(ss)</code>），防止值栈泄漏</li>
+<li><strong>宏展开迭代</strong> — <code>tail_macro</code> 计数器确保宏展开的尾位置自动展开</li>
+</ul>
 <h2 id="_5">求值器设计<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p><code>eval_sexp</code> 是核心，用 <code>goto</code> 实现 TCO 和宏展开：</p>
 <div class="highlight"><pre><span></span><code>eval_top:
